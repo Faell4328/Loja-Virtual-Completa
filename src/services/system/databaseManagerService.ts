@@ -243,4 +243,64 @@ export default class DatabaseManager{
         return users == null ? false : users;
     }
 
+    static async listAllCategories(){
+        const categories = await prismaClient.category.findMany();
+        return categories;
+    }
+
+    static async verifyExistenceCategory(id: string = '', name: string = ''){
+        if(id !== ''){
+            return await prismaClient.category.count({
+                where: { id }
+            });
+        }
+        else{
+            return await prismaClient.category.count({
+                where: { name }
+            });
+        }
+    }
+
+    static async createCategory(name: string){
+        const existyCagetory: number = await this.verifyExistenceCategory('', name);
+
+        if(existyCagetory != 0){
+            return false;
+        }
+        
+        const category = await prismaClient.category.create({
+            data: { name }
+        });
+
+        return category;
+    }
+
+    static async changeCategory(id: string, name: string){
+        const existyCagetory: number = await this.verifyExistenceCategory(id);
+
+        if(existyCagetory == 0){
+            return false;
+        }
+        
+        const category = await prismaClient.category.update({
+            where: { id },
+            data: { name }
+        });
+
+        return category;
+    }
+
+    static async deleteCategory(id: string){
+        const existyCagetory: number = await this.verifyExistenceCategory(id);
+
+        if(existyCagetory == 0){
+            return false;
+        }
+        
+        const category = await prismaClient.category.delete({
+            where: { id },
+        });
+
+        return category;
+    }
 }

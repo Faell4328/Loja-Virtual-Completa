@@ -13,6 +13,7 @@ import DatabaseManager from './services/system/databaseManagerService';
 import { confirmationEmailRoute } from './routes/confirmationEmail';
 import { loginAndRegistrationRoute } from './routes/loginAndRegistration';
 import { recoveryPasswordRoute } from './routes/recoveryPassword';
+import { categoryRoute } from './routes/category';
 
 const teste = express();
 
@@ -32,6 +33,7 @@ teste.use(webhookRoute);
 teste.use(confirmationEmailRoute);
 teste.use(loginAndRegistrationRoute);
 teste.use(recoveryPasswordRoute);
+teste.use(categoryRoute);
 teste.use(router);
 
 teste.use(errorHandling);
