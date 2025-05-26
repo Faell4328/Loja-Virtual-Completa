@@ -244,8 +244,18 @@ export default class DatabaseManager{
     }
 
     static async listAllCategories(){
-        const categories = await prismaClient.category.findMany();
+        const categories = await prismaClient.category.findMany({
+            select: { id: true, name: true }
+        });
         return categories;
+    }
+
+    static async listAllProductsInCategory(categoryId: string){
+        const categoryProducts = await prismaClient.product.findMany({
+            where: { categoryId },
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true, mainImage: true }
+        });
+        return categoryProducts;
     }
 
     static async verifyExistenceCategory(id: string = '', name: string = ''){
@@ -302,5 +312,99 @@ export default class DatabaseManager{
         });
 
         return category;
+    }
+
+    static async listAllProducts(){
+        const products = await prismaClient.product.findMany({
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true, mainImage: true }
+        });
+        return products;
+    }
+
+    static async listSpecificProduct(productId: string){
+        const product = await prismaClient.product.findUnique({
+            where: { id: productId },
+            select: {name: true, originalPrice: true, promotionPrice: true, description: true, mainImage: true, category: { select: { id: true, name: true } }, size: { select: { size: true, quantity: true } }, imagesProduct: { select: { imageUrl: true } } }
+        });
+        return product;
+    }
+
+    static async verifyExistenceProduct(id: string){
+        return await prismaClient.product.count({
+            where: { id }
+        });
+    }
+
+    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, mainImage: string, status: 'STOCK' | 'NO_STOCK'){
+        originalPrice = Number(originalPrice);
+        promotionPrice = Number(promotionPrice);
+        const returnProduct = await prismaClient.product.create({
+            data: { name, originalPrice, promotionPrice, categoryId, description, mainImage, status },
+            select: { id: true }
+        })
+        return returnProduct;
+    }
+
+    static async addSizeProduct(sizeProduct: string | string[], quantityProduct: string | string[], productId: string){
+        try{
+            if(Array.isArray(sizeProduct)){
+                for(var cont = 0; cont < sizeProduct.length; cont++){
+                    let size= sizeProduct[cont];
+                    let quantity: number = Number(quantityProduct[cont]);
+                    await prismaClient.productSize.create({
+                        data: { size, quantity, productId }
+                    })
+                }
+            }
+            else{
+                await prismaClient.productSize.create({
+                    data: { size: sizeProduct, quantity: Number(quantityProduct), productId }
+                });
+            }
+            return true;
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async addImagesProdut(files: any, productId: string){
+        if(Array.isArray(files) && files.length > 1){
+            for(var cont = 1; cont < files.length; cont++){
+                let imageUrl = files[cont].filename;
+                await prismaClient.imagesProduct.create({
+                    data: { imageUrl, productId }
+                })
+            }
+            return true;
+        }
+        return false;
+    }
+
+    static async changeProduct(productId: string, name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string){
+        originalPrice = Number(originalPrice);
+        promotionPrice = Number(promotionPrice);
+        await prismaClient.product.update({
+            where: { id: productId },
+            data: { name, originalPrice, promotionPrice, categoryId, description }
+        })
+    }
+
+    static async deleteSize(productId: string){
+        await prismaClient.productSize.deleteMany({
+            where: { productId }
+        })
+    }
+
+    static async deleteImages(productId: string){
+        await prismaClient.imagesProduct.deleteMany({
+            where: { productId }
+        })
+    }
+
+    static async deleteProduct(productId: string){
+        await prismaClient.product.delete({
+            where: { id: productId }
+        })
     }
 }

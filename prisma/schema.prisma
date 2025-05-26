@@ -74,15 +74,21 @@ model Category {
   product Product[]
 }
 
+enum StatusProduct {
+  STOCK
+  NO_STOCK
+}
+
 model Product {
-  id             String    @id @default(uuid())
-  name           String    @db.VarChar(100)
+  id             String        @id @default(uuid())
+  name           String        @db.VarChar(100)
   originalPrice  Int
   promotionPrice Int?
   categoryId     String
-  description    String?   @db.VarChar(200)
+  description    String?       @db.VarChar(200)
   mainImage      String
-  creationDate   DateTime  @default(now())
+  status         StatusProduct
+  creationDate   DateTime      @default(now())
   updateDate     DateTime?
 
   size          ProductSize[]

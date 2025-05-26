@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
-import { changeCategoryService, createCategoriesService, deleteCategoryService, listAllCategoriesService } from '../../services/category/informationService';
+import { validationResult } from 'express-validator';
+
+import { changeCategoryService, createCategoryService, deleteCategoryService, listAllCategoriesService, listAllProductsInCategoryService } from '../../services/category/informationService';
 import serverSendingPattern from '../serverSendingPattern';
 
 export async function listAllCategoriesController(req: Request, res: Response){
     const categories = await listAllCategoriesService()
     if(categories.length == 0){
-        serverSendingPattern(res, null, 'Você não possui nenhuma categoria cadastrada', null, categories);
+        serverSendingPattern(res, null, 'Você não possui nenhuma categoria cadastrada', null, null);
     }
     else{
         serverSendingPattern(res, null, null , null, categories);
@@ -13,10 +15,32 @@ export async function listAllCategoriesController(req: Request, res: Response){
     return;
 }
 
-export async function createCategoriesController(req: Request, res: Response){
-    const { name } = req.body;
+export async function listAllProductsInCategoryController(req: Request, res: Response){
+    const { hash } = req.params;
+    const categoryProduct = await listAllProductsInCategoryService(hash);
 
-    const category = await createCategoriesService(name);
+    if(categoryProduct == false){
+        serverSendingPattern(res, null, 'Não existe nenhum produto nessa categória', null, null);
+    }
+    else{
+        serverSendingPattern(res, null, null, null, categoryProduct);
+    }
+
+    return
+}
+
+export async function createCategoryController(req: Request, res: Response){
+
+    const errors:any = validationResult(req);
+
+    if(!errors.isEmpty()){
+        serverSendingPattern(res, null, errors.errors[0].msg, null, null);
+        return;
+    }
+
+    const { name: categoryName } = req.body;
+
+    const category = await createCategoryService(categoryName);
 
     if(category == 'Já existe uma categoria com esse nome'){
         serverSendingPattern(res, null, 'Já existe uma categoria com esse nome', null, null);
@@ -32,10 +56,18 @@ export async function createCategoriesController(req: Request, res: Response){
 }
 
 export async function changeCategoryController(req: Request, res: Response){
-    const id  = req.params.hash;
-    const name = req.body.name;
+    
+    const errors:any = validationResult(req);
 
-    const category = await changeCategoryService(id, name);
+    if(!errors.isEmpty()){
+        serverSendingPattern(res, null, errors.errors[0].msg, null, null);
+        return;
+    }
+
+    const categoryId  = req.params.hash;
+    const categoryName = req.body.name;
+
+    const category = await changeCategoryService(categoryId, categoryName);
 
     if(category == 'Não foi possível alterar, a categória enviada não existe'){
         serverSendingPattern(res, null, 'Categoria escolhida não existe', null, null);

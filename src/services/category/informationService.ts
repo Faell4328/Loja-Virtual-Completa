@@ -5,7 +5,16 @@ export async function listAllCategoriesService(){
     return categories;
 }
 
-export async function createCategoriesService(categoryName: string){
+export async function listAllProductsInCategoryService(categoryId: string){
+    const categoryProducts = await DatabaseManager.listAllProductsInCategory(categoryId);
+    if(categoryProducts.length > 0){
+        return categoryProducts;
+    }
+
+    return false;
+}
+
+export async function createCategoryService(categoryName: string){
     const category = await DatabaseManager.createCategory(categoryName);
 
     if(category == false){
@@ -15,8 +24,8 @@ export async function createCategoriesService(categoryName: string){
     return category;
 }
 
-export async function changeCategoryService(id: string, name: string){
-    const category = await DatabaseManager.changeCategory(id, name);
+export async function changeCategoryService(categoryId: string, categoryName: string){
+    const category = await DatabaseManager.changeCategory(categoryId, categoryName);
 
     if(category == false){
         return 'Não foi possível alterar, a categória enviada não existe';
@@ -25,8 +34,8 @@ export async function changeCategoryService(id: string, name: string){
     return category;
 }
 
-export async function deleteCategoryService(id: string){
-    const category = await DatabaseManager.deleteCategory(id);
+export async function deleteCategoryService(categoryId: string){
+    const category = await DatabaseManager.deleteCategory(categoryId);
 
     if(category == false){
         return 'Não foi possível deletar, a categória enviada não existe';

@@ -14,6 +14,7 @@ import { confirmationEmailRoute } from './routes/confirmationEmail';
 import { loginAndRegistrationRoute } from './routes/loginAndRegistration';
 import { recoveryPasswordRoute } from './routes/recoveryPassword';
 import { categoryRoute } from './routes/category';
+import { productRoute } from './routes/product';
 
 const teste = express();
 
@@ -34,6 +35,7 @@ teste.use(confirmationEmailRoute);
 teste.use(loginAndRegistrationRoute);
 teste.use(recoveryPasswordRoute);
 teste.use(categoryRoute);
+teste.use(productRoute);
 teste.use(router);
 
 teste.use(errorHandling);

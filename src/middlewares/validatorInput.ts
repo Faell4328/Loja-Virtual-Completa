@@ -72,6 +72,7 @@ export const validatePassword = [
 
 export const validateUpdateInformationUser = [
     body('name')
+        .notEmpty().withMessage('Falta o nome')
         .isLength({ min: 2 }).withMessage('Seu nome deve ter no mínimo 2 caracteres')
         .isLength({ max: 100 }).withMessage('Seu nome deve ter no máximo 100 caracteres'),
     body('phone')
@@ -110,3 +111,83 @@ export const validateUpdateInformationUser = [
         .optional()
         .isLength({ max: 100 }).withMessage('O complemento não pode passar de de 100 caracteres'),
 ];
+
+export const validateCategory = [
+    body('name')
+        .notEmpty().withMessage('Falta o nome')
+        .isLength({ min: 2 }).withMessage('O nome da categoria deve ter no mínimo 2 caracteres')
+        .isLength({ max: 100 }).withMessage('O nome da categoria não pode passar de de 100 caracteres'),
+]
+
+export const validateCreatedProduct = [
+    body('name')
+        .notEmpty().withMessage('Falta o nome do produto')
+        .trim()
+        .escape()
+        .isLength({ min: 2 }).withMessage('Nome precisa ter mais que 2 caracteres')
+        .isLength({ max: 100 }).withMessage('O nome deve ter no máximo 100 caracteres'),
+
+    body('originalPrice')
+        .notEmpty().withMessage('Falta o preço do produto')
+        .isFloat({ min: 0 }).withMessage('Não é permitido valor negativo'),
+
+    body('promotionPrice')
+        .optional()
+        .isLength({ min: 1 }).withMessage('Não é permitido opção vazio, se não quer colocar promoção, coloque o valor em 0')
+        .isFloat({ min: 0 }).withMessage('Não é permitido valor negativo'),
+
+    body('categoryId')
+        .notEmpty().withMessage('Falta a categoria do produto')
+        .trim()
+        .escape()
+        .isLength({ max: 200 }).withMessage('A categoria deve ter no máximo 200 caracteres'),
+
+    body('description')
+        .optional()
+        .isLength({ max: 100 }).withMessage('A descrição deve ter no máximo 100 caracteres'),
+
+    body('size')
+        .optional()
+        .isLength({ min: 1 }).withMessage('Não é permitido opção vazia')
+        .isLength({ max: 100 }).withMessage('As opções não pode deve ter mais que 100 caracteres'),
+
+    body('quantity')
+        .optional()
+        .isLength({ min: 1 }).withMessage('Não é permitido quantidade vazia')
+        .isFloat({ min: 0 }).withMessage('Não é permitido valor negativo na quantidade'),
+
+    body('file').custom((value, {req}) => {
+        if(req.files != undefined && req.files.length <= 0){
+            throw new Error('Não foi enviado imagem, é necessário enviar ao menos uma imagem')
+        }
+        return true;
+    })
+]
+
+export const validateChangedProduct = [
+    body('name')
+        .notEmpty().withMessage('Falta o nome do produto')
+        .trim()
+        .escape()
+        .isLength({ min: 2 }).withMessage('Nome precisa ter mais que 2 caracteres')
+        .isLength({ max: 100 }).withMessage('O nome deve ter no máximo 100 caracteres'),
+
+    body('originalPrice')
+        .notEmpty().withMessage('Falta o preço do produto')
+        .isFloat({ min: 0 }).withMessage('Não é permitido valor negativo'),
+
+    body('promotionPrice')
+        .optional()
+        .isLength({ min: 1 }).withMessage('Não é permitido opção vazio, se não quer colocar promoção, coloque o valor em 0')
+        .isFloat({ min: 0 }).withMessage('Não é permitido valor negativo'),
+
+    body('categoryId')
+        .notEmpty().withMessage('Falta a categoria do produto')
+        .trim()
+        .escape()
+        .isLength({ max: 200 }).withMessage('A categoria deve ter no máximo 200 caracteres'),
+
+    body('description')
+        .optional()
+        .isLength({ max: 100 }).withMessage('A descrição deve ter no máximo 100 caracteres'),
+]

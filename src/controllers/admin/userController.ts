@@ -16,7 +16,8 @@ export async function createUserAdminController(req: Request, res: Response){
     const errors:any = validationResult(req);
 
     if(!errors.isEmpty()){
-        return res.status(400).json({ 'error': errors.errors[0].msg });
+        serverSendingPattern(res, null, errors.errors[0].msg, null, null);
+        return;
     }
 
     const { name, email, phone, password } = req.body;

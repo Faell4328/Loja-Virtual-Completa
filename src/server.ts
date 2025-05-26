@@ -16,6 +16,7 @@ import { confirmationEmailRoute } from './routes/confirmationEmail';
 import { loginAndRegistrationRoute } from './routes/loginAndRegistration';
 import { recoveryPasswordRoute } from './routes/recoveryPassword';
 import { categoryRoute } from './routes/category';
+import { productRoute } from './routes/product';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(confirmationEmailRoute);
 app.use(loginAndRegistrationRoute);
 app.use(recoveryPasswordRoute);
 app.use(categoryRoute);
+app.use(productRoute);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use(router);
 
