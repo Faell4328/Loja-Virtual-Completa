@@ -86,7 +86,6 @@ model Product {
   promotionPrice Int?
   categoryId     String
   description    String?       @db.VarChar(200)
-  mainImage      String
   status         StatusProduct
   creationDate   DateTime      @default(now())
   updateDate     DateTime?

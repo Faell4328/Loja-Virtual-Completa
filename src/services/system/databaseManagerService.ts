@@ -253,7 +253,7 @@ export default class DatabaseManager{
     static async listAllProductsInCategory(categoryId: string){
         const categoryProducts = await prismaClient.product.findMany({
             where: { categoryId },
-            select: { id: true, name: true, originalPrice: true, promotionPrice: true, mainImage: true }
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true }
         });
         return categoryProducts;
     }
@@ -316,7 +316,7 @@ export default class DatabaseManager{
 
     static async listAllProducts(){
         const products = await prismaClient.product.findMany({
-            select: { id: true, name: true, originalPrice: true, promotionPrice: true, mainImage: true }
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } }
         });
         return products;
     }
@@ -324,7 +324,7 @@ export default class DatabaseManager{
     static async listSpecificProduct(productId: string){
         const product = await prismaClient.product.findUnique({
             where: { id: productId },
-            select: {name: true, originalPrice: true, promotionPrice: true, description: true, mainImage: true, category: { select: { id: true, name: true } }, size: { select: { size: true, quantity: true } }, imagesProduct: { select: { imageUrl: true } } }
+            select: {name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, size: { select: { id: true, size: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
         });
         return product;
     }
@@ -335,17 +335,35 @@ export default class DatabaseManager{
         });
     }
 
-    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, mainImage: string, status: 'STOCK' | 'NO_STOCK'){
+    static async verifyExistenceSizeProductById(sizeId: string){
+        return await prismaClient.productSize.count({
+            where: { id: sizeId }
+        });
+    }
+
+    static async verifyExistenceSizeProductByName(size: string){
+        return await prismaClient.productSize.count({
+            where: { size }
+        });
+    }
+
+    static async verifyExistenceImageProduct(imagemId: string){
+        return await prismaClient.imagesProduct.findUnique({
+            where: { id: imagemId }
+        });
+    }
+
+    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, status: 'STOCK' | 'NO_STOCK'){
         originalPrice = Number(originalPrice);
         promotionPrice = Number(promotionPrice);
         const returnProduct = await prismaClient.product.create({
-            data: { name, originalPrice, promotionPrice, categoryId, description, mainImage, status },
+            data: { name, originalPrice, promotionPrice, categoryId, description, status },
             select: { id: true }
         })
         return returnProduct;
     }
 
-    static async addSizeProduct(sizeProduct: string | string[], quantityProduct: string | string[], productId: string){
+    static async addSizeProduct(productId: string, sizeProduct: string | string[], quantityProduct: string | string[]){
         try{
             if(Array.isArray(sizeProduct)){
                 for(var cont = 0; cont < sizeProduct.length; cont++){
@@ -368,14 +386,20 @@ export default class DatabaseManager{
         }
     }
 
-    static async addImagesProdut(files: any, productId: string){
+    static async addImagesProduct(productId: string, files: any){
         if(Array.isArray(files) && files.length > 1){
-            for(var cont = 1; cont < files.length; cont++){
+            for(var cont = 0; cont < files.length; cont++){
                 let imageUrl = files[cont].filename;
                 await prismaClient.imagesProduct.create({
                     data: { imageUrl, productId }
                 })
             }
+            return true;
+        }
+        else if(!Array.isArray(files)){
+            await prismaClient.imagesProduct.create({
+                data: { imageUrl: files.filename, productId }
+            });
             return true;
         }
         return false;
@@ -390,16 +414,74 @@ export default class DatabaseManager{
         })
     }
 
-    static async deleteSize(productId: string){
+    static async changeSizeProduct(sizeId: string, size: string, quantity: number){
+        if(Array.isArray(size)){
+            for(var cont = 0; cont < size.length; cont ++){
+                quantity = Number(quantity);
+                await prismaClient.productSize.update({
+                    where: { id: sizeId },
+                    data: { size, quantity }
+                })
+            }
+        }
+        else{
+            quantity = Number(quantity);
+            await prismaClient.productSize.update({
+                where: { id: sizeId },
+                data: { size, quantity }
+            })
+        }
+    }
+
+    static async changeImageProduct(imageId: string, file: any){
+        try{
+            return await prismaClient.imagesProduct.update({
+                where: { id: imageId },
+                data: { imageUrl: file.filename }
+            });
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteSizeProduct(sizeId: string){
+        try{
+            await prismaClient.productSize.delete({
+                where: { id: sizeId }
+            })
+            return true;
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteAllSizeProduct(productId: string){
         await prismaClient.productSize.deleteMany({
             where: { productId }
         })
     }
 
-    static async deleteImages(productId: string){
+    static async deleteImageProduct(imageId: string){
+        try{
+            return await prismaClient.imagesProduct.delete({
+                where: { id: imageId }
+            })
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteAllImagesProduct(productId: string){
+        const images = await prismaClient.imagesProduct.findMany({
+            where: { productId }
+        });
         await prismaClient.imagesProduct.deleteMany({
             where: { productId }
         })
+        return images;
     }
 
     static async deleteProduct(productId: string){
