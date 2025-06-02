@@ -89,11 +89,13 @@ export async function deleteProductService(productId: string){
         return 'Não é possível deletar o produto, não foi encontrado'; 
     }
 
-    await DatabaseManager.deleteAllSizeProduct(productId);
-    const images = await DatabaseManager.deleteAllImagesProduct(productId);
-    deleteImagesLocal(images);
+    await DatabaseManager.deleteAllSizeProductById(productId);
+    const images = await DatabaseManager.deleteAllImagesProductById(productId);
+    if(images !=null && images.length > 1){
+        deleteImagesLocal(images);
+    }
 
-    await DatabaseManager.deleteProduct(productId);
+    await DatabaseManager.deleteProductById(productId);
     return 'ok';
 }
 
@@ -117,7 +119,7 @@ export async function deleteImageProductService(imageId: string){
         return 'Não é possível deletar a imagem, não foi encontrado'; 
     }
 
-    const imageProduct = await DatabaseManager.deleteImageProduct(imageId);
+    const imageProduct = await DatabaseManager.deleteImageProductById(imageId);
 
     if(imageProduct == false){
         return 'Não foi possível deletar a imagem';

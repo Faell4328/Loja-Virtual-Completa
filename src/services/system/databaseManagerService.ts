@@ -118,7 +118,7 @@ export default class DatabaseManager{
         const createLoginToken = await prismaClient.user.update({
             where: { email, password: hashPassword },
             data: { loginToken: hash, loginTokenExpirationDate: date },
-            select: { loginToken: true, loginTokenExpirationDate: true }
+            select: { role: true, loginToken: true, loginTokenExpirationDate: true }
         });
 
         if(!createLoginToken) console.log('erro ao criar o token de login');
@@ -250,6 +250,14 @@ export default class DatabaseManager{
         return categories;
     }
 
+    static async consultNameCategory(categoryId: string){
+        const category = await prismaClient.category.findMany({
+            where: { id: categoryId },
+            select: { id: true, name: true }
+        });
+        return category;
+    }
+
     static async listAllProductsInCategory(categoryId: string){
         const categoryProducts = await prismaClient.product.findMany({
             where: { categoryId },
@@ -286,12 +294,6 @@ export default class DatabaseManager{
     }
 
     static async changeCategory(id: string, name: string){
-        const existyCagetory: number = await this.verifyExistenceCategory(id);
-
-        if(existyCagetory == 0){
-            return false;
-        }
-        
         const category = await prismaClient.category.update({
             where: { id },
             data: { name }
@@ -387,7 +389,7 @@ export default class DatabaseManager{
     }
 
     static async addImagesProduct(productId: string, files: any){
-        if(Array.isArray(files) && files.length > 1){
+        if(Array.isArray(files)){
             for(var cont = 0; cont < files.length; cont++){
                 let imageUrl = files[cont].filename;
                 await prismaClient.imagesProduct.create({
@@ -396,13 +398,12 @@ export default class DatabaseManager{
             }
             return true;
         }
-        else if(!Array.isArray(files)){
+        else{
             await prismaClient.imagesProduct.create({
                 data: { imageUrl: files.filename, productId }
             });
             return true;
         }
-        return false;
     }
 
     static async changeProduct(productId: string, name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string){
@@ -457,13 +458,17 @@ export default class DatabaseManager{
         }
     }
 
-    static async deleteAllSizeProduct(productId: string){
+    static async deleteAllSizeProductById(productId: string){
         await prismaClient.productSize.deleteMany({
             where: { productId }
         })
     }
 
-    static async deleteImageProduct(imageId: string){
+    static async deleteAllSizeProductByCategory(categoryName: string){
+
+    }
+
+    static async deleteImageProductById(imageId: string){
         try{
             return await prismaClient.imagesProduct.delete({
                 where: { id: imageId }
@@ -474,7 +479,7 @@ export default class DatabaseManager{
         }
     }
 
-    static async deleteAllImagesProduct(productId: string){
+    static async deleteAllImagesProductById(productId: string){
         const images = await prismaClient.imagesProduct.findMany({
             where: { productId }
         });
@@ -484,7 +489,7 @@ export default class DatabaseManager{
         return images;
     }
 
-    static async deleteProduct(productId: string){
+    static async deleteProductById(productId: string){
         await prismaClient.product.delete({
             where: { id: productId }
         })

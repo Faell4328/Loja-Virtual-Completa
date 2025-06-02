@@ -27,5 +27,5 @@ export default async function loginService(email: string, password: string){
         sendMessageWhatappService('55'+user.phone, `Ola ${user.name.split(' ')[0]}, alguém realizou login em sua conta, caso não seja você, entre em contato com o suporte`);
     }
 
-    return {status: true, token: returnDB.loginToken, expiration: returnDB.loginTokenExpirationDate };
+    return {status: true, token: returnDB.loginToken, expiration: returnDB.loginTokenExpirationDate, role: returnDB.role };
 }

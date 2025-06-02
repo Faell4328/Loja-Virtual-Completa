@@ -17,11 +17,13 @@ import { loginAndRegistrationRoute } from './routes/loginAndRegistration';
 import { recoveryPasswordRoute } from './routes/recoveryPassword';
 import { categoryRoute } from './routes/category';
 import { productRoute } from './routes/product';
+import { resolve } from 'path';
 
 const app = express();
 
 DatabaseManager.checkStatusSystem();
 
+app.use(express.static(resolve(__dirname, '..', 'public')));
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:5173',

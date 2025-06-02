@@ -20,6 +20,7 @@ export function deleteImagesLocal(name: any | any[]){
     }
     else{
         if(name.path != undefined){
+        console.log('aq3')
             unlink(resolve(name.path), (err) => {
                 if(err) console.log(`Erro ao deletar o arquivo ${name.path}`)
             })

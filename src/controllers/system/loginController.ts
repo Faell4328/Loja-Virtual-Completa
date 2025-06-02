@@ -8,7 +8,8 @@ import serverSendingPattern from '../serverSendingPattern';
 interface serviceReturnProps{
     status: boolean;
     token: string | null;
-    expiration: Date | null
+    expiration: Date | null;
+    role: string;
 }
 
 export default async function loginController(req: Request, res: Response){
@@ -37,7 +38,7 @@ export default async function loginController(req: Request, res: Response){
         }
 
         Cookie.setCookie(res, serviceReturn.token, serviceReturn.expiration);
-        serverSendingPattern(res, '/', null, 'Login realizado', null);
+        serverSendingPattern(res, '/', null, 'Login realizado', serviceReturn.role);
         return;
     }
     else{

@@ -20,49 +20,49 @@ productRoute.get('/produto/:hash', regularlCondicionalRoutes, (req: Request, res
     return;
 });
 
-productRoute.post('/produto', regularlCondicionalRoutes, isAdmin, upload.array('file'), validateCreatedProduct, (req: Request, res: Response) => {
+productRoute.post('/admin/produto', regularlCondicionalRoutes, isAdmin, upload.array('file'), validateCreatedProduct, (req: Request, res: Response) => {
     createProductController(req, res);
     return;
 });
 
-productRoute.post('/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
+productRoute.post('/admin/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
     createSizeProductController(req, res);
     return;
 });
 
-productRoute.post('/produto/imagem/:hash', regularlCondicionalRoutes, isAdmin, upload.single('file'), validateFile, (req: Request, res: Response) => {
+productRoute.post('/admin/produto/imagem/:hash', regularlCondicionalRoutes, isAdmin, upload.single('file'), validateFile, (req: Request, res: Response) => {
     createImageProductController(req, res);
     return;
 });
 
-productRoute.put('/produto/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateChangedProduct, (req: Request, res: Response) => {
+productRoute.put('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateChangedProduct, (req: Request, res: Response) => {
     changeProductController(req, res);
     return;
 });
 
-productRoute.put('/produto/tamanho/:hash',regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
+productRoute.put('/admin/produto/tamanho/:hash',regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
     changeSizeProductController(req, res);
     return;
 });
 
-productRoute.put('/produto/imagem/:hash', regularlCondicionalRoutes, isAdmin, upload.single('file'), validateFile, (req: Request, res: Response) => {
+productRoute.put('/admin/produto/imagem/:hash', regularlCondicionalRoutes, isAdmin, upload.single('file'), validateFile, (req: Request, res: Response) => {
     changeImagemProductController(req, res);
     return;
 });
 
 
-productRoute.delete('/produto/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
+productRoute.delete('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
     deleteProductController(req, res);
     return
 });
 
 
-productRoute.delete('/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
+productRoute.delete('/admin/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
     deleteSizeProductController(req, res);
     return
 });
 
-productRoute.delete('/produto/imagem/:hash', (req: Request, res: Response) => {
+productRoute.delete('/admin/produto/imagem/:hash', (req: Request, res: Response) => {
     deleteImageProductController(req, res);
     return
 });

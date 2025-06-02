@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
-import { changeCategoryService, createCategoryService, deleteCategoryService, listAllCategoriesService, listAllProductsInCategoryService } from '../../services/category/informationService';
+import { changeCategoryService, consultNameCategoryService, createCategoryService, deleteCategoryService, listAllCategoriesService, listAllProductsInCategoryService } from '../../services/category/informationService';
 import serverSendingPattern from '../serverSendingPattern';
 
 export async function listAllCategoriesController(req: Request, res: Response){
@@ -13,6 +13,20 @@ export async function listAllCategoriesController(req: Request, res: Response){
         serverSendingPattern(res, null, null , null, categories);
     }
     return;
+}
+
+export async function consultNameCategoryController(req: Request, res: Response){
+    const { hash } = req.params;
+    const categoryName = await consultNameCategoryService(hash);
+
+    if(categoryName == false){
+        serverSendingPattern(res, null, 'Não existe nenhum produto nessa categória', null, null);
+    }
+    else{
+        serverSendingPattern(res, null, null, null, categoryName);
+    }
+
+    return
 }
 
 export async function listAllProductsInCategoryController(req: Request, res: Response){
@@ -67,16 +81,13 @@ export async function changeCategoryController(req: Request, res: Response){
     const categoryId  = req.params.hash;
     const categoryName = req.body.name;
 
-    const category = await changeCategoryService(categoryId, categoryName);
+    const category: any = await changeCategoryService(categoryId, categoryName);
 
-    if(category == 'Não foi possível alterar, a categória enviada não existe'){
-        serverSendingPattern(res, null, 'Categoria escolhida não existe', null, null);
-    }
-    else if(category.id !== undefined){
+    if(category.id !== undefined){
         serverSendingPattern(res, null, null, 'Categoria atualizada', null);
     }
     else{
-        serverSendingPattern(res, null, 'Não foi possui atualizar a categoria', null, null);
+        serverSendingPattern(res, null, category, null, null);
     }
     
     return;
@@ -85,16 +96,13 @@ export async function changeCategoryController(req: Request, res: Response){
 export async function deleteCategoryController(req: Request, res: Response){
     const id  = req.params.hash;
 
-    const category = await deleteCategoryService(id);
+    const category: any = await deleteCategoryService(id);
 
-    if(category == 'Não foi possível deletar, a categória enviada não existe'){
-        serverSendingPattern(res, null, 'Não foi possível deletar, a categória enviada não existe', null, null);
-    }
-    else if(category.id !== undefined){
+    if(category.id !== undefined){
         serverSendingPattern(res, null, null, 'Categoria deletada', null);
     }
     else{
-        serverSendingPattern(res, null, 'Não foi possui deletar a categoria', null, null);
+        serverSendingPattern(res, null, category, null, null);
     }
     
     return;
