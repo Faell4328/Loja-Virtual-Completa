@@ -251,7 +251,7 @@ export default class DatabaseManager{
     }
 
     static async consultNameCategory(categoryId: string){
-        const category = await prismaClient.category.findMany({
+        const category = await prismaClient.category.findUnique({
             where: { id: categoryId },
             select: { id: true, name: true }
         });
@@ -326,7 +326,7 @@ export default class DatabaseManager{
     static async listSpecificProduct(productId: string){
         const product = await prismaClient.product.findUnique({
             where: { id: productId },
-            select: {name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, size: { select: { id: true, size: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
+            select: {name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, option: { select: { id: true, option: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
         });
         return product;
     }
@@ -337,15 +337,15 @@ export default class DatabaseManager{
         });
     }
 
-    static async verifyExistenceSizeProductById(sizeId: string){
-        return await prismaClient.productSize.count({
-            where: { id: sizeId }
+    static async verifyExistenceOptionProductById(optionId: string){
+        return await prismaClient.productOption.count({
+            where: { id: optionId }
         });
     }
 
-    static async verifyExistenceSizeProductByName(size: string){
-        return await prismaClient.productSize.count({
-            where: { size }
+    static async verifyExistenceOptionProductByName(option: string){
+        return await prismaClient.productOption.count({
+            where: { option }
         });
     }
 
@@ -365,20 +365,20 @@ export default class DatabaseManager{
         return returnProduct;
     }
 
-    static async addSizeProduct(productId: string, sizeProduct: string | string[], quantityProduct: string | string[]){
+    static async addoptionProduct(productId: string, optionProduct: string | string[], quantityProduct: string | string[]){
         try{
-            if(Array.isArray(sizeProduct)){
-                for(var cont = 0; cont < sizeProduct.length; cont++){
-                    let size= sizeProduct[cont];
+            if(Array.isArray(optionProduct)){
+                for(var cont = 0; cont < optionProduct.length; cont++){
+                    let option= optionProduct[cont];
                     let quantity: number = Number(quantityProduct[cont]);
-                    await prismaClient.productSize.create({
-                        data: { size, quantity, productId }
+                    await prismaClient.productOption.create({
+                        data: { option, quantity, productId }
                     })
                 }
             }
             else{
-                await prismaClient.productSize.create({
-                    data: { size: sizeProduct, quantity: Number(quantityProduct), productId }
+                await prismaClient.productOption.create({
+                    data: { option: optionProduct, quantity: Number(quantityProduct), productId }
                 });
             }
             return true;
@@ -415,21 +415,21 @@ export default class DatabaseManager{
         })
     }
 
-    static async changeSizeProduct(sizeId: string, size: string, quantity: number){
-        if(Array.isArray(size)){
-            for(var cont = 0; cont < size.length; cont ++){
+    static async changeOptionProduct(optionId: string, option: string, quantity: number){
+        if(Array.isArray(option)){
+            for(var cont = 0; cont < option.length; cont ++){
                 quantity = Number(quantity);
-                await prismaClient.productSize.update({
-                    where: { id: sizeId },
-                    data: { size, quantity }
+                await prismaClient.productOption.update({
+                    where: { id: optionId },
+                    data: { option, quantity }
                 })
             }
         }
         else{
             quantity = Number(quantity);
-            await prismaClient.productSize.update({
-                where: { id: sizeId },
-                data: { size, quantity }
+            await prismaClient.productOption.update({
+                where: { id: optionId },
+                data: { option, quantity }
             })
         }
     }
@@ -446,10 +446,10 @@ export default class DatabaseManager{
         }
     }
 
-    static async deleteSizeProduct(sizeId: string){
+    static async deleteOptionProduct(optionId: string){
         try{
-            await prismaClient.productSize.delete({
-                where: { id: sizeId }
+            await prismaClient.productOption.delete({
+                where: { id: optionId }
             })
             return true;
         }
@@ -458,13 +458,13 @@ export default class DatabaseManager{
         }
     }
 
-    static async deleteAllSizeProductById(productId: string){
-        await prismaClient.productSize.deleteMany({
+    static async deleteAllOptionProductById(productId: string){
+        await prismaClient.productOption.deleteMany({
             where: { productId }
         })
     }
 
-    static async deleteAllSizeProductByCategory(categoryName: string){
+    static async deleteAllOptionProductByCategory(categoryName: string){
 
     }
 

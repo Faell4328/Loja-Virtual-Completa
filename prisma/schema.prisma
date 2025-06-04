@@ -85,21 +85,21 @@ model Product {
   originalPrice  Int
   promotionPrice Int?
   categoryId     String
-  description    String?       @db.VarChar(200)
+  description    String?       @db.VarChar(400)
   status         StatusProduct
   creationDate   DateTime      @default(now())
   updateDate     DateTime?
 
-  size          ProductSize[]
+  option       productOption[]
   imagesProduct ImagesProduct[]
   orderItem     OrderItem[]
 
   category Category @relation(fields: [categoryId], references: [id])
 }
 
-model ProductSize {
+model productOption {
   id           String    @id @default(uuid())
-  size         String    @db.VarChar(10)
+  option      String    @db.VarChar(10)
   quantity     Int
   productId    String
   creationDate DateTime  @default(now())
@@ -140,20 +140,20 @@ enum StatusOrderItem {
 }
 
 model OrderItem {
-  id            String          @id @default(uuid())
-  userId        String
-  productId     String
-  productSizeId String
-  amount        Int
-  saleId        String?
-  status        StatusOrderItem @default(CART)
-  creationDate  DateTime        @default(now())
-  updateDate    DateTime?
+  id               String          @id @default(uuid())
+  userId           String
+  productId        String
+  productOptionId String
+  amount           Int
+  saleId           String?
+  status           StatusOrderItem @default(CART)
+  creationDate     DateTime        @default(now())
+  updateDate       DateTime?
 
-  user        User        @relation(fields: [userId], references: [id])
-  product     Product     @relation(fields: [productId], references: [id])
-  productSize ProductSize @relation(fields: [productSizeId], references: [id])
-  sale        Sale?       @relation(fields: [saleId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
+  product        Product        @relation(fields: [productId], references: [id])
+  productOption productOption @relation(fields: [productOptionId], references: [id])
+  sale           Sale?          @relation(fields: [saleId], references: [id])
 }
 
 model SystemConfig {

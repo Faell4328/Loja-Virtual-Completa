@@ -173,16 +173,15 @@ export const validateCreatedProduct = [
     body('categoryId')
         .notEmpty().withMessage('Falta a categoria do produto')
         .trim()
-        .escape()
-        .isLength({ max: 200 }).withMessage('A categoria deve ter no máximo 200 caracteres'),
+        .escape(),
 
     body('description')
         .optional()
         .trim()
         .escape()
-        .isLength({ max: 100 }).withMessage('A descrição deve ter no máximo 100 caracteres'),
+        .isLength({ max: 400 }).withMessage('A descrição deve ter no máximo 400 caracteres'),
 
-    body('size')
+    body('option')
         .optional()
         .trim()
         .escape()
@@ -238,13 +237,13 @@ export const validateChangedProduct = [
         .isLength({ max: 100 }).withMessage('A descrição deve ter no máximo 100 caracteres'),
 ]
 
-export const validateSizeProduct = [
-    body('size')
+export const validateOptionProduct = [
+    body('option')
         .optional()
         .trim()
         .escape()
         .isLength({ min: 1 }).withMessage('Não é permitido opção vazia')
-        .isLength({ max: 100 }).withMessage('As opções não pode deve ter mais que 100 caracteres'),
+        .isLength({ max: 100 }).withMessage('A opção não pode deve ter mais que 100 caracteres'),
 
     body('quantity')
         .optional()

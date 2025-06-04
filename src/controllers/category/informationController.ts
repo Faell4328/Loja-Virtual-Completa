@@ -7,7 +7,7 @@ import serverSendingPattern from '../serverSendingPattern';
 export async function listAllCategoriesController(req: Request, res: Response){
     const categories = await listAllCategoriesService()
     if(categories.length == 0){
-        serverSendingPattern(res, null, 'Você não possui nenhuma categoria cadastrada', null, null);
+        serverSendingPattern(res, null, 'Não exite nenhuma categoria cadastrada', null, null);
     }
     else{
         serverSendingPattern(res, null, null , null, categories);
@@ -20,7 +20,7 @@ export async function consultNameCategoryController(req: Request, res: Response)
     const categoryName = await consultNameCategoryService(hash);
 
     if(categoryName == false){
-        serverSendingPattern(res, null, 'Não existe nenhum produto nessa categória', null, null);
+        serverSendingPattern(res, null, 'Essa categoria não existe', null, null);
     }
     else{
         serverSendingPattern(res, null, null, null, categoryName);
@@ -63,7 +63,7 @@ export async function createCategoryController(req: Request, res: Response){
         serverSendingPattern(res, null, null, 'Categoria cadastrada', null);
     }
     else{
-        serverSendingPattern(res, null, 'Não foi possui cadastrar a categoria', null, null);
+        serverSendingPattern(res, null, 'Não foi possível cadastrar a categoria', null, null);
     }
 
     return;

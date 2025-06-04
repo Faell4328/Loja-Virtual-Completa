@@ -11,27 +11,27 @@ export async function listSpecificProductService(productId: string){
     return categories;
 }
 
-export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, size: string | string [], quantity: string | string [], files: any){
+export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, option: string | string [], quantity: string | string [], files: any){
     if(await DatabaseManager.verifyExistenceCategory(categoryId) <= 0){
         return 'Categoria fornecida não existe'; 
     }
 
     const product = await DatabaseManager.createProduct(name, originalPrice, promotionPrice, categoryId, description, 'STOCK');
-    await DatabaseManager.addSizeProduct(product.id, size, quantity);
+    await DatabaseManager.addoptionProduct(product.id, option, quantity);
     await DatabaseManager.addImagesProduct(product.id, files);
 
     return 'ok';
 }
 
-export async function createSizeProductService(productId: string, size: string, quantity: string){
+export async function createOptionProductService(productId: string, option: string, quantity: string){
     if(await DatabaseManager.verifyExistenceProduct(productId) <= 0){
         return 'Produto fornecido não existe'; 
     }
-    else if(await DatabaseManager.verifyExistenceSizeProductByName(size) != 0){
+    else if(await DatabaseManager.verifyExistenceOptionProductByName(option) != 0){
         return 'A opção fornecida já está cadastrado'; 
     }
 
-    await DatabaseManager.addSizeProduct(productId, size, quantity);
+    await DatabaseManager.addoptionProduct(productId, option, quantity);
 
     return 'ok';
 }
@@ -44,7 +44,7 @@ export async function createImageProductService(productId: string, file: any){
     let imagemProduct = await DatabaseManager.addImagesProduct(productId, file);
 
     if(imagemProduct == false){
-        return 'Não foi possível cadastrar';
+        return 'Não foi possível adicionar a imagem';
     }
 
     return 'ok';
@@ -59,12 +59,14 @@ export async function changeProductService(productId: string, name: string, orig
     return 'ok';
 }
 
-export async function changeSizeProductService(sizeId: string, size: string, quantity: number){
-    if(await DatabaseManager.verifyExistenceSizeProductById(sizeId) <= 0){
+export async function changeOptionProductService(optionId: string, option: string, quantity: number){
+    if(await DatabaseManager.verifyExistenceOptionProductById(optionId) <= 0){
+        return 'A opção fornecida não existe'; 
+    } else if(await DatabaseManager.verifyExistenceOptionProductByName(option) != 0){
         return 'A opção fornecida já está cadastrado'; 
     }
 
-    await DatabaseManager.changeSizeProduct(sizeId, size, quantity);
+    await DatabaseManager.changeOptionProduct(optionId, option, quantity);
     return 'ok';
 }
 
@@ -89,7 +91,7 @@ export async function deleteProductService(productId: string){
         return 'Não é possível deletar o produto, não foi encontrado'; 
     }
 
-    await DatabaseManager.deleteAllSizeProductById(productId);
+    await DatabaseManager.deleteAllOptionProductById(productId);
     const images = await DatabaseManager.deleteAllImagesProductById(productId);
     if(images !=null && images.length > 1){
         deleteImagesLocal(images);
@@ -99,14 +101,14 @@ export async function deleteProductService(productId: string){
     return 'ok';
 }
 
-export async function deleteSizeProductService(sizeId: string){
-    if(await DatabaseManager.verifyExistenceSizeProductById(sizeId) == 0){
+export async function deleteOptionProductService(optionId: string){
+    if(await DatabaseManager.verifyExistenceOptionProductById(optionId) == 0){
         return 'Não é possível deletar a opção, não foi encontrado'; 
     }
 
-    const sizeProduct = await DatabaseManager.deleteSizeProduct(sizeId);
+    const optionProduct = await DatabaseManager.deleteOptionProduct(optionId);
 
-    if(sizeProduct == false){
+    if(optionProduct == false){
         return 'Não foi possível deletar a opção';
     }
 

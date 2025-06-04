@@ -26,7 +26,7 @@ DatabaseManager.checkStatusSystem();
 app.use(express.static(resolve(__dirname, '..', 'public')));
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true

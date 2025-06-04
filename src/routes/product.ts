@@ -4,8 +4,8 @@ import multer from 'multer';
 import uploadConfig from '../config/multer';
 import isAdmin from '../middlewares/isAdmin';
 import { regularlCondicionalRoutes } from '../middlewares/condicionalRoutes';
-import { changeImagemProductController, changeProductController, changeSizeProductController, createImageProductController, createProductController, createSizeProductController, deleteImageProductController, deleteProductController, deleteSizeProductController, listAllProductsController, listSpecificProductController } from '../controllers/product/informationController';
-import { validateChangedProduct, validateSizeProduct, validateCreatedProduct, validateFile } from '../middlewares/validatorInput';
+import { changeImagemProductController, changeProductController, changeOptionProductController, createImageProductController, createProductController, createOptionProductController, deleteImageProductController, deleteProductController, deleteOptionProductController, listAllProductsController, listSpecificProductController } from '../controllers/product/informationController';
+import { validateChangedProduct, validateOptionProduct, validateCreatedProduct, validateFile } from '../middlewares/validatorInput';
 
 const productRoute = Router();
 const upload = multer(uploadConfig.upload(false, '/product'));
@@ -25,8 +25,8 @@ productRoute.post('/admin/produto', regularlCondicionalRoutes, isAdmin, upload.a
     return;
 });
 
-productRoute.post('/admin/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
-    createSizeProductController(req, res);
+productRoute.post('/admin/produto/opcao/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateOptionProduct, (req: Request, res: Response) => {
+    createOptionProductController(req, res);
     return;
 });
 
@@ -40,8 +40,8 @@ productRoute.put('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, upl
     return;
 });
 
-productRoute.put('/admin/produto/tamanho/:hash',regularlCondicionalRoutes, isAdmin, upload.none(), validateSizeProduct, (req: Request, res: Response) => {
-    changeSizeProductController(req, res);
+productRoute.put('/admin/produto/opcao/:hash',regularlCondicionalRoutes, isAdmin, upload.none(), validateOptionProduct, (req: Request, res: Response) => {
+    changeOptionProductController(req, res);
     return;
 });
 
@@ -57,8 +57,8 @@ productRoute.delete('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, 
 });
 
 
-productRoute.delete('/admin/produto/tamanho/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
-    deleteSizeProductController(req, res);
+productRoute.delete('/admin/produto/opcao/:hash', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
+    deleteOptionProductController(req, res);
     return
 });
 

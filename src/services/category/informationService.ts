@@ -8,7 +8,7 @@ export async function listAllCategoriesService(){
 
 export async function consultNameCategoryService(categoryId: string){
     const category = await DatabaseManager.consultNameCategory(categoryId);
-    if(category.length != null){
+    if(category != null){
         return category;
     }
 
@@ -35,16 +35,22 @@ export async function createCategoryService(categoryName: string){
 }
 
 export async function changeCategoryService(categoryId: string, categoryName: string){
-    const existyCagetory: number = await DatabaseManager.verifyExistenceCategory('', categoryName);
+    let existyCagetory: number = await DatabaseManager.verifyExistenceCategory('', categoryName);
 
-    if(existyCagetory != 0){
+    if(existyCagetory > 0){
         return 'Já existe um categoria com esse nome';
+    }
+
+    existyCagetory = await DatabaseManager.verifyExistenceCategory(categoryId, '');
+
+    if(existyCagetory != 1){
+        return 'Categoria informada não existe';
     }
         
     const category = await DatabaseManager.changeCategory(categoryId, categoryName);
 
     if(category == null){
-        return 'Não foi possível alterar, a categória enviada não existe';
+        return 'Não foi possível alterar o nome da categoria';
     }
 
     return category;
