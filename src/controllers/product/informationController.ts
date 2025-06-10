@@ -5,26 +5,28 @@ import { validationResult } from 'express-validator';
 import { deleteImagesLocal } from '../../tools/deleteImagesLocal';
 
 export async function listAllProductsController(req: Request, res: Response){
-    const products = await listAllProductsService();
-    if(products.length == 0){
-        serverSendingPattern(res, null, 'Você não possui nenhum produto cadastrado', null, null);
+    const returnServiceAllProducts = await listAllProductsService();
+    
+    if(returnServiceAllProducts.error == true){
+        serverSendingPattern(res, returnServiceAllProducts.redirect, returnServiceAllProducts.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, null , null, products);
-    }
+
+    serverSendingPattern(res, returnServiceAllProducts.redirect, null, null, returnServiceAllProducts.data);
     return;
 }
 
 export async function listSpecificProductController(req: Request, res: Response){
     const productId  = req.params.hash;
 
-    const product = await listSpecificProductService(productId);
-    if(product == null){
-        serverSendingPattern(res, null, 'Produto solicitado não existe', null, null);
+    const returnServiceSpecificProduct = await listSpecificProductService(productId);
+
+    if(returnServiceSpecificProduct.error == true){
+        serverSendingPattern(res, returnServiceSpecificProduct.redirect, returnServiceSpecificProduct.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, null , null, product);
-    }
+    
+    serverSendingPattern(res, returnServiceSpecificProduct.redirect, null, null, returnServiceSpecificProduct.data);
     return;
 }
 
@@ -55,17 +57,16 @@ export async function createProductController(req: Request, res: Response){
         return;
     }
 
-    const returnProduct: string = await createProductService(name, Number(originalPrice), Number(promotionPrice), categoryId, description, option, quantity, files);
+    const returnServiceProduct = await createProductService(name, Number(originalPrice), Number(promotionPrice), categoryId, description, option, quantity, files);
 
-    if(returnProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Produto cadastrado', null);
-        return;
-    }
-    else{
+    if(returnServiceProduct.error == true){
         deleteImagesLocal(files);
-        serverSendingPattern(res, null, returnProduct, null, null);
+        serverSendingPattern(res, returnServiceProduct.redirect, returnServiceProduct.data, null, null);
         return;
     }
+    
+    serverSendingPattern(res, returnServiceProduct.redirect, null, returnServiceProduct.data, null);
+    return;
 }
 
 export async function createOptionProductController(req: Request, res: Response){
@@ -77,14 +78,14 @@ export async function createOptionProductController(req: Request, res: Response)
         return;
     }
 
-    const returnOptionProduct: string = await createOptionProductService(hash, option, quantity);
+    const returnServiceOptionProduct = await createOptionProductService(hash, option, quantity);
 
-    if(returnOptionProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Opção cadastrado', null);
+    if(returnServiceOptionProduct.error == true){
+        serverSendingPattern(res, returnServiceOptionProduct.redirect, returnServiceOptionProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnOptionProduct, null, null);
+        serverSendingPattern(res, returnServiceOptionProduct.redirect, null, returnServiceOptionProduct.data, null);
         return;
     }
 }
@@ -104,15 +105,15 @@ export async function createImageProductController(req: Request, res: Response){
     const { hash } = req.params;
     const file = req.file;
 
-    const returnImageProduct: string = await createImageProductService(hash, file);
+    const returnServiceImageProduct = await createImageProductService(hash, file);
 
-    if(returnImageProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Imagem cadastrada', null);
+    if(returnServiceImageProduct.error == true){
+        deleteImagesLocal(file);
+        serverSendingPattern(res, returnServiceImageProduct.redirect, returnServiceImageProduct.data, null, null);
         return;
     }
     else{
-        deleteImagesLocal(file);
-        serverSendingPattern(res, null, returnImageProduct, null, null);
+        serverSendingPattern(res, returnServiceImageProduct.redirect, null, returnServiceImageProduct.data, null);
         return;
     }
 }
@@ -133,14 +134,14 @@ export async function changeProductController(req: Request, res: Response){
         return;
     }
 
-    const returnProduct: string = await changeProductService(hash, name, originalPrice, promotionPrice, categoryId, description);
+    const returnServiceProduct = await changeProductService(hash, name, originalPrice, promotionPrice, categoryId, description);
 
-    if(returnProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Produto atualizado', null);
+    if(returnServiceProduct.error == true){
+        serverSendingPattern(res, returnServiceProduct.redirect, returnServiceProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnProduct, null, null);
+        serverSendingPattern(res, returnServiceProduct.redirect, null, returnServiceProduct.data, null);
         return;
     }
 }
@@ -161,14 +162,14 @@ export async function changeOptionProductController(req: Request, res: Response)
         return;
     }
 
-    const returnProduct: string = await changeOptionProductService(hash, option, quantity);
+    const returnServiceProduct = await changeOptionProductService(hash, option, quantity);
 
-    if(returnProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'A opção do produto foi atualizado', null);
+    if(returnServiceProduct.error == true){
+        serverSendingPattern(res, returnServiceProduct.redirect, returnServiceProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnProduct, null, null);
+        serverSendingPattern(res, returnServiceProduct.redirect, null, returnServiceProduct.data, null);
         return;
     }
 }
@@ -187,15 +188,15 @@ export async function changeImagemProductController(req: Request, res: Response)
     const { hash } = req.params;
     const file = req.file;
 
-    const returnProduct: string = await changeImagemProductService(hash, file);
+    const returnServiceProduct = await changeImagemProductService(hash, file);
 
-    if(returnProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Imagem atualizada', null);
+    if(returnServiceProduct.error == true){
+        deleteImagesLocal(file);
+        serverSendingPattern(res, returnServiceProduct.redirect, returnServiceProduct.data, null, null);
         return;
     }
     else{
-        deleteImagesLocal(file);
-        serverSendingPattern(res, null, returnProduct, null, null);
+        serverSendingPattern(res, returnServiceProduct.redirect, null, returnServiceProduct.data, null);
         return;
     }
 }
@@ -203,14 +204,14 @@ export async function changeImagemProductController(req: Request, res: Response)
 export async function deleteProductController(req: Request, res: Response){
     const { hash } = req.params;
 
-    const returnProduct: string = await deleteProductService(hash);
+    const returnServiceProduct = await deleteProductService(hash);
 
-    if(returnProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Produto deletado', null);
+    if(returnServiceProduct.error == true){
+        serverSendingPattern(res, returnServiceProduct.redirect, returnServiceProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnProduct, null, null);
+        serverSendingPattern(res, returnServiceProduct.redirect, null, returnServiceProduct.data, null);
         return;
     }
 }
@@ -218,14 +219,14 @@ export async function deleteProductController(req: Request, res: Response){
 export async function deleteOptionProductController(req: Request, res: Response){
     const { hash } = req.params;
 
-    const returnOptionProduct: string = await deleteOptionProductService(hash);
+    const returnServiceOptionProduct = await deleteOptionProductService(hash);
 
-    if(returnOptionProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Opção deletada', null);
+    if(returnServiceOptionProduct.error == true){
+        serverSendingPattern(res, returnServiceOptionProduct.redirect, returnServiceOptionProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnOptionProduct, null, null);
+        serverSendingPattern(res, returnServiceOptionProduct.redirect, null, returnServiceOptionProduct.data, null);
         return;
     }
 }
@@ -233,14 +234,14 @@ export async function deleteOptionProductController(req: Request, res: Response)
 export async function deleteImageProductController(req: Request, res: Response){
     const { hash } = req.params;
 
-    const returnImagemProduct: string = await deleteImageProductService(hash);
+    const returnDbImagemProduct = await deleteImageProductService(hash);
 
-    if(returnImagemProduct == 'ok'){
-        serverSendingPattern(res, null, null, 'Imagem deletada', null);
+    if(returnDbImagemProduct.error == true){
+        serverSendingPattern(res, returnDbImagemProduct.redirect, returnDbImagemProduct.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, returnImagemProduct, null, null);
+        serverSendingPattern(res, returnDbImagemProduct.redirect, null, returnDbImagemProduct.data, null);
         return;
     }
 }

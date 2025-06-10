@@ -170,23 +170,18 @@ export default class DatabaseManager{
             select: { id: true, name: true, email: true, phone: true, role: true, status: true }
         });
 
-        if(userInformation == null) return null;
+        if(userInformation == null){
+            return null;
+        }
 
-        const addressQuantity = await this.checkExistingAddress(userId);
-        if(addressQuantity== false) return {userInformation};
-
-        const userAddress = await this.listInformationAddress(userId);
-
-        return { userInformation, userAddress };
+        return userInformation;
     }
 
     static async listInformationAddress(userId: string){
 
-        const userAddress = await prismaClient.user.findUnique({
-            where: { id: userId },
-            include: { address: {
-                select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
-            }}
+        const userAddress = await prismaClient.address.findUnique({
+            where: { usersId: userId },
+            select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
         });
 
         return userAddress;
@@ -240,7 +235,7 @@ export default class DatabaseManager{
         const users = await prismaClient.user.findMany({
             select: { id: true, name: true, email: true, phone: true, role: true, status: true }
         });
-        return users == null ? false : users;
+        return users;
     }
 
     static async listAllCategories(){
@@ -280,12 +275,6 @@ export default class DatabaseManager{
     }
 
     static async createCategory(name: string){
-        const existyCagetory: number = await this.verifyExistenceCategory('', name);
-
-        if(existyCagetory != 0){
-            return false;
-        }
-        
         const category = await prismaClient.category.create({
             data: { name }
         });
@@ -303,12 +292,6 @@ export default class DatabaseManager{
     }
 
     static async deleteCategory(id: string){
-        const existyCagetory: number = await this.verifyExistenceCategory(id);
-
-        if(existyCagetory == 0){
-            return false;
-        }
-        
         const category = await prismaClient.category.delete({
             where: { id },
         });

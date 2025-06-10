@@ -2,17 +2,17 @@ import { Request, Response } from 'express';
 
 import serverSendingPattern from '../serverSendingPattern';
 import { validationResult } from 'express-validator';
-import { deleteUserAddressInformationService, listUserInformationService, uploadUserInformationService } from '../../services/user/informationService';
+import { deleteUserAddressInformationService, listUserInformationService, updateInformationUserService } from '../../services/user/informationService';
 
 export async function listUserInformationController(req: Request, res: Response){
-    const userInformation = await listUserInformationService(req.userId);
+    const returnServiceInformationUser = await listUserInformationService(req.userId);
 
-    if(userInformation == null){
-        serverSendingPattern(res, null, 'Problema ao listar', null, null);
+    if(returnServiceInformationUser.error == true){
+        serverSendingPattern(res, returnServiceInformationUser.redirect, returnServiceInformationUser.data, null, null);
         return;
     }
 
-    serverSendingPattern(res, null, null, null, userInformation);
+    serverSendingPattern(res, null, null, null, returnServiceInformationUser.data);
     return;
 }
 
@@ -31,32 +31,31 @@ export async function uploadUserInformationController(req: Request, res: Respons
     
     const someWithValue = address.some(item => item !== undefined);
     address.pop();
-    
     const allUndefined = address.every(item => item !== undefined);
     
     if( someWithValue && !allUndefined ){
-        serverSendingPattern(res, null, 'Se você colocout algum campo de endereço, deve colocar todos os campos', null, null);
+        serverSendingPattern(res, null, 'Se você colocou algum campo de endereço, deve colocar todos os campos', null, null);
         return;
     }
 
-    const statusUpload = await uploadUserInformationService(req.userId, name, phone, description, street, number, neighborhood, zipCode, city, state, complement);
+    const returnServiceStatusUpdate = await updateInformationUserService(req.userId, name, phone, description, street, number, neighborhood, zipCode, city, state, complement);
     
-    if(statusUpload == false){
-        serverSendingPattern(res, null, 'Não foi possível atualizar', null, null);
+    if(returnServiceStatusUpdate.error == true){
+        serverSendingPattern(res, returnServiceStatusUpdate.redirect, returnServiceStatusUpdate.data, null, null);
         return;
     }
     
-    serverSendingPattern(res, null, null, 'Informação atualizada', null);
+    serverSendingPattern(res, returnServiceStatusUpdate.redirect, null, returnServiceStatusUpdate.data, null);
     return;
 }
 
 export async function deleteUserAddressInformationController(req: Request, res: Response){
-    const statusAddress = await deleteUserAddressInformationService(req.userId);
-    if(statusAddress == false){
-        serverSendingPattern(res, null, 'Você não possui endereço cadastrado', null, null);
+    const returnServiceAddress = await deleteUserAddressInformationService(req.userId);
+    if(returnServiceAddress.error == true){
+        serverSendingPattern(res, returnServiceAddress.redirect, returnServiceAddress.data, null, null);
         return;
     }
 
-    serverSendingPattern(res, null, null, 'Endereço deletado', null);
+    serverSendingPattern(res, null, null, returnServiceAddress.data, null);
     return;
 }

@@ -1,6 +1,7 @@
 import DatabaseManager from '../system/databaseManagerService';
 import HashPassword from '../../security/hashPassword';
 import sendEmail from '../email/sendEmailPattern';
+import returnServicePattern from '../returnServicePattern';
 
 export default async function createrUserAdminService(name: string, email: string, phone: string, password: string){
     let hashPassword:string = await HashPassword.passwordHashGenerator(password);
@@ -8,4 +9,6 @@ export default async function createrUserAdminService(name: string, email: strin
 
     let hashEmail = await DatabaseManager.createEmailToken(email);
     sendEmail.sendEmailConfirmationService(email, hashEmail);
+    
+    return;
 }

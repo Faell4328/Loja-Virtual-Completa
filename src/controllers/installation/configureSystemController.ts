@@ -36,6 +36,6 @@ export default async function configureSystemController(req: Request, res: Respo
     setStatus(1);
     configureSystemService(name, file);
 
-    serverSendingPattern(res, '/instalacao/admin', null, 'Sistema configurado com sucesso', null);
+    serverSendingPattern(res, '/instalacao/admin', null, 'Sistema configurado', null);
     return;
 }

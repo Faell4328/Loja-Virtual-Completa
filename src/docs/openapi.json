@@ -718,7 +718,7 @@
                                     "Conta não ativada":{
                                         "value": {
                                             "redirect": "/confirmacao",
-                                            "error": "Você não confirmou o email ainda para realizar o login",
+                                            "error": "Confirme o email antes de fazer login",
                                             "ok": null,
                                             "data": null
                                         }
@@ -1325,7 +1325,7 @@
                                             ]
                                         }
                                     },
-                                    "Problema ao consultar": {
+                                    "Problema ao consultar os usuários": {
                                         "value": {
                                             "redirect": null,
                                             "error": "Não foi possível listar os usuários",

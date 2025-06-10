@@ -1,73 +1,93 @@
+import returnServicePattern from "../returnServicePattern";
 import DatabaseManager from "../system/databaseManagerService";
 
 export async function listAllCategoriesService(){
-    const categories = await DatabaseManager.listAllCategories();
-    return categories;
+    const returnDbCategories = await DatabaseManager.listAllCategories();
+
+    if(returnDbCategories.length == 0){
+        return returnServicePattern(null, true, false, 'Não existe nenhuma categoria cadastrada')
+    }
+
+    return returnServicePattern(null, false, true, returnDbCategories)
 }
 
 
 export async function consultNameCategoryService(categoryId: string){
-    const category = await DatabaseManager.consultNameCategory(categoryId);
-    if(category != null){
-        return category;
+    const returnDbCategoryName = await DatabaseManager.consultNameCategory(categoryId);
+
+    if(returnDbCategoryName == null){
+        return returnServicePattern(null, true, false, 'Essa categoria não existe');
     }
 
-    return false;
+    return returnServicePattern(null, false, true, returnDbCategoryName);
 }
 
 export async function listAllProductsInCategoryService(categoryId: string){
-    const categoryProducts = await DatabaseManager.listAllProductsInCategory(categoryId);
-    if(categoryProducts.length > 0){
-        return categoryProducts;
-    }
+    const returnDbAllProducts = await DatabaseManager.listAllProductsInCategory(categoryId);
 
-    return false;
+    if(returnDbAllProducts.length == 0){
+        return returnServicePattern(null, true, false, 'Não existe nenhum produto nessa categória');
+    }
+    
+    return returnServicePattern(null, false, true, returnDbAllProducts);
 }
 
 export async function createCategoryService(categoryName: string){
-    const category = await DatabaseManager.createCategory(categoryName);
+    const returnDbExistyCagetory: number = await DatabaseManager.verifyExistenceCategory('', categoryName);
 
-    if(category == false){
-        return 'Já existe uma categoria com esse nome';
+    if(returnDbExistyCagetory > 0){
+        return returnServicePattern(null, true, false, 'Já existe uma categoria com esse nome');
     }
 
-    return category;
+    const returnDbCategory = await DatabaseManager.createCategory(categoryName);
+
+    if(returnDbCategory == null){
+        return returnServicePattern(null, true, false, 'Não foi possível cadstrar a categoria');
+    }
+
+    return returnServicePattern(null, false, true, 'Categoria cadastrada');
 }
 
 export async function changeCategoryService(categoryId: string, categoryName: string){
-    let existyCagetory: number = await DatabaseManager.verifyExistenceCategory('', categoryName);
+    const checkExistyCagetoryName = await DatabaseManager.verifyExistenceCategory('', categoryName);
 
-    if(existyCagetory > 0){
-        return 'Já existe um categoria com esse nome';
+    if(checkExistyCagetoryName > 0){
+        return returnServicePattern(null, true, false, 'Já existe uma categoria com esse nome');
     }
 
-    existyCagetory = await DatabaseManager.verifyExistenceCategory(categoryId, '');
+    const checkExistyCagetory = await DatabaseManager.verifyExistenceCategory(categoryId, '');
 
-    if(existyCagetory != 1){
-        return 'Categoria informada não existe';
+    if(checkExistyCagetory == 0){
+        return returnServicePattern(null, true, false, 'Categoria informada não existe');
     }
         
-    const category = await DatabaseManager.changeCategory(categoryId, categoryName);
+    const returnDbCategory = await DatabaseManager.changeCategory(categoryId, categoryName);
 
-    if(category == null){
-        return 'Não foi possível alterar o nome da categoria';
+    if(returnDbCategory == null){
+        return returnServicePattern(null, true, false, 'Não foi possível alterar o nome da categoria');
     }
 
-    return category;
+    return returnServicePattern(null, false, true, 'Categoria atualizada');
 }
 
 export async function deleteCategoryService(categoryId: string){
-    const products = await DatabaseManager.listAllProductsInCategory(categoryId);
+    const checkExistyCagetory = await DatabaseManager.verifyExistenceCategory(categoryId);
 
-    if(products.length > 0){
-        return 'É necessário deletar ou alterar todos os produtos relacionado a essa categoria antes de deleta ela';
+    if(checkExistyCagetory == 0){
+        return returnServicePattern(null, true, false, 'Categoria solicitada não existe');
     }
 
-    const category = await DatabaseManager.deleteCategory(categoryId);
+    const returnDbProducts = await DatabaseManager.listAllProductsInCategory(categoryId);
 
-    if(category == false){
-        return 'Não foi possível deletar, a categória enviada não existe';
+    if(returnDbProducts.length > 0){
+        return returnServicePattern(null, true, false, 'É necessário deletar ou alterar todos os produtos relacionado a essa categoria antes de deleta ela');
     }
 
-    return category;
+    const returnDbCategory = await DatabaseManager.deleteCategory(categoryId);
+
+    if(returnDbCategory == null){
+        return returnServicePattern(null, true, false, 'Não foi possível deletar');
+    }
+
+    return returnServicePattern(null, false, true, 'Categoria deletada');
 }

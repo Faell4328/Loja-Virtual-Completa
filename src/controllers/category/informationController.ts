@@ -5,41 +5,39 @@ import { changeCategoryService, consultNameCategoryService, createCategoryServic
 import serverSendingPattern from '../serverSendingPattern';
 
 export async function listAllCategoriesController(req: Request, res: Response){
-    const categories = await listAllCategoriesService()
-    if(categories.length == 0){
-        serverSendingPattern(res, null, 'Não exite nenhuma categoria cadastrada', null, null);
+    const returnServiceCategories = await listAllCategoriesService();
+
+    if(returnServiceCategories.error == true){
+        serverSendingPattern(res, returnServiceCategories.redirect, returnServiceCategories.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, null , null, categories);
-    }
+
+    serverSendingPattern(res, returnServiceCategories.redirect, null, null, returnServiceCategories.data);
     return;
 }
 
 export async function consultNameCategoryController(req: Request, res: Response){
     const { hash } = req.params;
-    const categoryName = await consultNameCategoryService(hash);
+    const returnServiceCategoryName = await consultNameCategoryService(hash);
 
-    if(categoryName == false){
-        serverSendingPattern(res, null, 'Essa categoria não existe', null, null);
-    }
-    else{
-        serverSendingPattern(res, null, null, null, categoryName);
+    if(returnServiceCategoryName.error == true){
+        serverSendingPattern(res, returnServiceCategoryName.redirect, returnServiceCategoryName.data, null, null);
+        return;
     }
 
-    return
+    serverSendingPattern(res, returnServiceCategoryName.redirect, null, null, returnServiceCategoryName.data);
+    return;
 }
 
 export async function listAllProductsInCategoryController(req: Request, res: Response){
     const { hash } = req.params;
-    const categoryProduct = await listAllProductsInCategoryService(hash);
+    const returnServiceAllProducts = await listAllProductsInCategoryService(hash);
 
-    if(categoryProduct == false){
-        serverSendingPattern(res, null, 'Não existe nenhum produto nessa categória', null, null);
+    if(returnServiceAllProducts.error == true){
+        serverSendingPattern(res, returnServiceAllProducts.redirect, returnServiceAllProducts.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, null, null, categoryProduct);
-    }
-
+    serverSendingPattern(res, returnServiceAllProducts.redirect, null, null, returnServiceAllProducts.data);
     return
 }
 
@@ -52,20 +50,15 @@ export async function createCategoryController(req: Request, res: Response){
         return;
     }
 
-    const { name: categoryName } = req.body;
+    const categoryName = req.body.name;
+    const returnServiceCategory = await createCategoryService(categoryName);
 
-    const category = await createCategoryService(categoryName);
-
-    if(category == 'Já existe uma categoria com esse nome'){
-        serverSendingPattern(res, null, 'Já existe uma categoria com esse nome', null, null);
+    if(returnServiceCategory.error == true){
+        serverSendingPattern(res, returnServiceCategory.redirect, returnServiceCategory.data, null, null);
+        return;
     }
-    else if(category.id !== undefined){
-        serverSendingPattern(res, null, null, 'Categoria cadastrada', null);
-    }
-    else{
-        serverSendingPattern(res, null, 'Não foi possível cadastrar a categoria', null, null);
-    }
-
+    
+    serverSendingPattern(res, returnServiceCategory.redirect, null, returnServiceCategory.data, null);
     return;
 }
 
@@ -81,29 +74,28 @@ export async function changeCategoryController(req: Request, res: Response){
     const categoryId  = req.params.hash;
     const categoryName = req.body.name;
 
-    const category: any = await changeCategoryService(categoryId, categoryName);
+    const returnServiceCategory = await changeCategoryService(categoryId, categoryName);
 
-    if(category.id !== undefined){
-        serverSendingPattern(res, null, null, 'Categoria atualizada', null);
+    if(returnServiceCategory.error == true){
+        serverSendingPattern(res, returnServiceCategory.redirect, returnServiceCategory.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, category, null, null);
-    }
-    
+
+    console.log(returnServiceCategory.data)
+    serverSendingPattern(res, returnServiceCategory.redirect, null, returnServiceCategory.data, null);
     return;
 }
 
 export async function deleteCategoryController(req: Request, res: Response){
     const id  = req.params.hash;
 
-    const category: any = await deleteCategoryService(id);
+    const returnServiceCategory = await deleteCategoryService(id);
 
-    if(category.id !== undefined){
-        serverSendingPattern(res, null, null, 'Categoria deletada', null);
+    if(returnServiceCategory.error == true){
+        serverSendingPattern(res, returnServiceCategory.redirect, returnServiceCategory.data, null, null);
+        return;
     }
-    else{
-        serverSendingPattern(res, null, category, null, null);
-    }
-    
-    return;
+
+    serverSendingPattern(res, returnServiceCategory.redirect, null, returnServiceCategory.data, null);
+    return
 }

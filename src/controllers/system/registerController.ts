@@ -15,13 +15,13 @@ export default async function registrerUserController(req: Request, res: Respons
 
     const { name, email, phone, password } = req.body;
 
-    let retorno: boolean|string = await createUserService(name, email, phone, password);
-    if(retorno === true){
-        serverSendingPattern(res, '/confirmacao', null, 'Usuário cadastrado', null);
+    let returnService = await createUserService(name, email, phone, password);
+    if(returnService.error === true){
+        serverSendingPattern(res, returnService.redirect, returnService.data, null, null);
         return;
     }
     else{
-        serverSendingPattern(res, null, retorno, null, null);
+        serverSendingPattern(res, returnService.redirect, null, returnService.data, null);
         return;
     }
 }
