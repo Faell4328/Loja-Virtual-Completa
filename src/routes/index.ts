@@ -13,11 +13,11 @@ router.get('/', regularlCondicionalRoutes, async (req: Request, res: Response) =
             serverSendingPattern(res, null, null, null, user.role)
         }
         else{
-            serverSendingPattern(res, null, null, null, null);
+            serverSendingPattern(res, null, null, null, "OFF");
         }
     }
     else{
-        res.end();
+        serverSendingPattern(res, null, null, null, "OFF");
     }
     return;
 });

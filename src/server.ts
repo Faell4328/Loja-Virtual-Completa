@@ -26,7 +26,7 @@ DatabaseManager.checkStatusSystem();
 app.use(express.static(resolve(__dirname, '..', 'public')));
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -47,4 +47,4 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use(router);
 
 app.use(errorHandling);
-app.listen(3000, '0.0.0.0', () => console.log('rodando'))
+app.listen(5000, '0.0.0.0', () => console.log('rodando'))
