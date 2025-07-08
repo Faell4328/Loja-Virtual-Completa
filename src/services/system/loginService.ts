@@ -2,30 +2,34 @@ import { whatsappReady } from "../../routes/admin";
 import HashPassword from "../../security/hashPassword";
 import DatabaseManager from "./databaseManagerService";
 import sendMessageWhatappService from "../whatsapp/sendMessageWhatsappService";
+import returnServicePattern from "../returnServicePattern";
 
 export default async function loginService(email: string, password: string){
-    let user = await DatabaseManager.consultByEmail(email);
+    let returnConsult = await DatabaseManager.consultByEmail(email);
 
-    if(!user){
-        return false;
+    if(!returnConsult){
+        return returnServicePattern(null, true, false, 'Email ou senha incorreto');
     }
 
-    const { emailConfirmationToken, password: hashPassword } = user;
+    const { emailConfirmationToken, password: hashPassword } = returnConsult;
     if(emailConfirmationToken){
-        return 'redirect';
+        return returnServicePattern('/confirmacao', true, false, 'Confirme o email antes de fazer login');
     }
 
-    let retorno = await HashPassword.checkHash(password, hashPassword);
-    if(!retorno){
-        return false;
+    let statusHashPassword = await HashPassword.checkHash(password, hashPassword);
+    if(!statusHashPassword){
+        return returnServicePattern(null, true, false, 'Email ou senha incorreto');
     }
 
-    const returnDB = await DatabaseManager.login(email, hashPassword);
+    const returnLogin = await DatabaseManager.login(email, hashPassword);
 
-
-    if(user.phone && whatsappReady){
-        sendMessageWhatappService('55'+user.phone, `Ola ${user.name.split(' ')[0]}, alguém realizou login em sua conta, caso não seja você, entre em contato com o suporte`);
+    if(returnConsult.phone && whatsappReady){
+        sendMessageWhatappService('55'+returnConsult.phone, `Ola ${returnConsult.name.split(' ')[0]}, alguém realizou login em sua conta, caso não seja você, entre em contato com o suporte`);
     }
 
-    return {status: true, token: returnDB.loginToken, expiration: returnDB.loginTokenExpirationDate };
+    if(returnLogin.loginToken == null || returnLogin.loginTokenExpirationDate == null){
+        return returnServicePattern(null, true, false, 'Não foi possível fazer login, por favor, entre em contado com o suporte');
+    }
+
+    return returnServicePattern(null, false, true, { status: true, token: returnLogin.loginToken, expiration: returnLogin.loginTokenExpirationDate, role: returnLogin.role });
 }

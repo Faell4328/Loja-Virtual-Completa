@@ -13,15 +13,15 @@ export async function passwordRecoveryController(req: Request, res: Response){
         return;
     }
 
-    const serviceReturn: string = await passwordRecoveryService(req.body.email);
+    const returnService = await passwordRecoveryService(req.body.email);
 
-    if(serviceReturn === 'Esse email não está cadastrado'){
-        serverSendingPattern(res, null, serviceReturn, null, null);
+    if(returnService.error == true){
+        serverSendingPattern(res, null, returnService.data, null, null);
+        return;
+    }else{
+        serverSendingPattern(res, null, null, returnService.data, null);
         return;
     }
-
-    serverSendingPattern(res, null, null, serviceReturn, null);
-    return;
 }
 
 export async function passwordRecoveryConfirmationController(req: Request, res: Response){
@@ -39,13 +39,13 @@ export async function passwordRecoveryConfirmationController(req: Request, res: 
         return;
     }
 
-    const serviceReturn = await passwordConfirmationService(req.params.hash, password1);
+    const returnService = await passwordConfirmationService(req.params.hash, password1);
 
-    if(serviceReturn == 'Token expirado, foi enviado para seu email um novo link'){
-        serverSendingPattern(res, null, serviceReturn, null, null);
+    if(returnService.error == true){
+        serverSendingPattern(res, returnService.redirect, returnService.data, null, null);
         return;
     }
 
-    serverSendingPattern(res, null, null, serviceReturn, null);
+    serverSendingPattern(res, null, null, returnService.data, null);
     return;
 }

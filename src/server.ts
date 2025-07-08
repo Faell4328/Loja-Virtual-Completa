@@ -15,14 +15,18 @@ import { webhookRoute } from './routes/webhook';
 import { confirmationEmailRoute } from './routes/confirmationEmail';
 import { loginAndRegistrationRoute } from './routes/loginAndRegistration';
 import { recoveryPasswordRoute } from './routes/recoveryPassword';
+import { categoryRoute } from './routes/category';
+import { productRoute } from './routes/product';
+import { resolve } from 'path';
 
 const app = express();
 
 DatabaseManager.checkStatusSystem();
 
+app.use(express.static(resolve(__dirname, '..', 'public')));
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -37,8 +41,10 @@ app.use(webhookRoute);
 app.use(confirmationEmailRoute);
 app.use(loginAndRegistrationRoute);
 app.use(recoveryPasswordRoute);
+app.use(categoryRoute);
+app.use(productRoute);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use(router);
 
 app.use(errorHandling);
-app.listen(3000, '0.0.0.0', () => console.log('rodando'))
+app.listen(5000, '0.0.0.0', () => console.log('rodando'))

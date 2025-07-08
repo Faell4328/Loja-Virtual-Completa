@@ -4,7 +4,7 @@ import { Client, LocalAuth, Message } from 'whatsapp-web.js';
 import QRCode from 'qrcode';
 
 const axiosClient = axios.create({
-    baseURL: 'http://192.168.100.72:3000'
+    baseURL: 'http://192.168.100.72:5000'
 })
 
 const app = express();
@@ -163,6 +163,6 @@ client.initialize();
 timeout();
 
 
-app.listen(4000, () => {
+app.listen(5001, () => {
     console.log('Rodando em http://localhost:4000');
 });

@@ -6,6 +6,7 @@ import { validationResult } from 'express-validator';
 import configureSystemService from '../../services/installation/configureSystemService';
 import { setStatus, statusSystem } from '../../tools/status';
 import serverSendingPattern from '../serverSendingPattern';
+import { deleteImagesLocal } from '../../tools/deleteImagesLocal';
 
 export default async function configureSystemController(req: Request, res: Response){
 
@@ -18,9 +19,7 @@ export default async function configureSystemController(req: Request, res: Respo
 
     if(!errors.isEmpty()){
         if(errors.errors[0].msg === 'Falta o nome' && req.file !== undefined){
-            unlink(resolve(req.file.path), (err) => {
-                if(err) console.log('error')
-            })
+            deleteImagesLocal(req.file);
         }
         serverSendingPattern(res, null, errors.errors[0].msg, null, null)
         return;
@@ -37,6 +36,6 @@ export default async function configureSystemController(req: Request, res: Respo
     setStatus(1);
     configureSystemService(name, file);
 
-    serverSendingPattern(res, '/instalacao/admin', null, 'Sistema configurado com sucesso', null);
+    serverSendingPattern(res, '/instalacao/admin', null, 'Sistema configurado', null);
     return;
 }

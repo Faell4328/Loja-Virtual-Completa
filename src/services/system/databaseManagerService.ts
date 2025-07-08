@@ -118,7 +118,7 @@ export default class DatabaseManager{
         const createLoginToken = await prismaClient.user.update({
             where: { email, password: hashPassword },
             data: { loginToken: hash, loginTokenExpirationDate: date },
-            select: { loginToken: true, loginTokenExpirationDate: true }
+            select: { role: true, loginToken: true, loginTokenExpirationDate: true }
         });
 
         if(!createLoginToken) console.log('erro ao criar o token de login');
@@ -170,23 +170,18 @@ export default class DatabaseManager{
             select: { id: true, name: true, email: true, phone: true, role: true, status: true }
         });
 
-        if(userInformation == null) return null;
+        if(userInformation == null){
+            return null;
+        }
 
-        const addressQuantity = await this.checkExistingAddress(userId);
-        if(addressQuantity== false) return {userInformation};
-
-        const userAddress = await this.listInformationAddress(userId);
-
-        return { userInformation, userAddress };
+        return userInformation;
     }
 
     static async listInformationAddress(userId: string){
 
-        const userAddress = await prismaClient.user.findUnique({
-            where: { id: userId },
-            include: { address: {
-                select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
-            }}
+        const userAddress = await prismaClient.address.findUnique({
+            where: { usersId: userId },
+            select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
         });
 
         return userAddress;
@@ -240,7 +235,246 @@ export default class DatabaseManager{
         const users = await prismaClient.user.findMany({
             select: { id: true, name: true, email: true, phone: true, role: true, status: true }
         });
-        return users == null ? false : users;
+        return users;
     }
 
+    static async listAllCategories(){
+        const categories = await prismaClient.category.findMany({
+            select: { id: true, name: true }
+        });
+        return categories;
+    }
+
+    static async consultNameCategory(categoryId: string){
+        const category = await prismaClient.category.findUnique({
+            where: { id: categoryId },
+            select: { id: true, name: true }
+        });
+        return category;
+    }
+
+    static async listAllProductsInCategory(categoryId: string){
+        const categoryProducts = await prismaClient.product.findMany({
+            where: { categoryId },
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true }
+        });
+        return categoryProducts;
+    }
+
+    static async verifyExistenceCategory(id: string = '', name: string = ''){
+        if(id !== ''){
+            return await prismaClient.category.count({
+                where: { id }
+            });
+        }
+        else{
+            return await prismaClient.category.count({
+                where: { name }
+            });
+        }
+    }
+
+    static async createCategory(name: string){
+        const category = await prismaClient.category.create({
+            data: { name }
+        });
+
+        return category;
+    }
+
+    static async changeCategory(id: string, name: string){
+        const category = await prismaClient.category.update({
+            where: { id },
+            data: { name }
+        });
+
+        return category;
+    }
+
+    static async deleteCategory(id: string){
+        const category = await prismaClient.category.delete({
+            where: { id },
+        });
+
+        return category;
+    }
+
+    static async listAllProducts(){
+        const products = await prismaClient.product.findMany({
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } }
+        });
+        return products;
+    }
+
+    static async listSpecificProduct(productId: string){
+        const product = await prismaClient.product.findUnique({
+            where: { id: productId },
+            select: {name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, option: { select: { id: true, option: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
+        });
+        return product;
+    }
+
+    static async verifyExistenceProduct(id: string){
+        return await prismaClient.product.count({
+            where: { id }
+        });
+    }
+
+    static async verifyExistenceOptionProductById(optionId: string){
+        return await prismaClient.productOption.count({
+            where: { id: optionId }
+        });
+    }
+
+    static async verifyExistenceOptionProductByName(option: string){
+        return await prismaClient.productOption.count({
+            where: { option }
+        });
+    }
+
+    static async verifyExistenceImageProduct(imagemId: string){
+        return await prismaClient.imagesProduct.findUnique({
+            where: { id: imagemId }
+        });
+    }
+
+    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, status: 'STOCK' | 'NO_STOCK'){
+        originalPrice = Number(originalPrice);
+        promotionPrice = Number(promotionPrice);
+        const returnProduct = await prismaClient.product.create({
+            data: { name, originalPrice, promotionPrice, categoryId, description, status },
+            select: { id: true }
+        })
+        return returnProduct;
+    }
+
+    static async addoptionProduct(productId: string, optionProduct: string | string[], quantityProduct: string | string[]){
+        try{
+            if(Array.isArray(optionProduct)){
+                for(var cont = 0; cont < optionProduct.length; cont++){
+                    let option= optionProduct[cont];
+                    let quantity: number = Number(quantityProduct[cont]);
+                    await prismaClient.productOption.create({
+                        data: { option, quantity, productId }
+                    })
+                }
+            }
+            else{
+                await prismaClient.productOption.create({
+                    data: { option: optionProduct, quantity: Number(quantityProduct), productId }
+                });
+            }
+            return true;
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async addImagesProduct(productId: string, files: any){
+        if(Array.isArray(files)){
+            for(var cont = 0; cont < files.length; cont++){
+                let imageUrl = files[cont].filename;
+                await prismaClient.imagesProduct.create({
+                    data: { imageUrl, productId }
+                })
+            }
+            return true;
+        }
+        else{
+            await prismaClient.imagesProduct.create({
+                data: { imageUrl: files.filename, productId }
+            });
+            return true;
+        }
+    }
+
+    static async changeProduct(productId: string, name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string){
+        originalPrice = Number(originalPrice);
+        promotionPrice = Number(promotionPrice);
+        await prismaClient.product.update({
+            where: { id: productId },
+            data: { name, originalPrice, promotionPrice, categoryId, description }
+        })
+    }
+
+    static async changeOptionProduct(optionId: string, option: string, quantity: number){
+        if(Array.isArray(option)){
+            for(var cont = 0; cont < option.length; cont ++){
+                quantity = Number(quantity);
+                await prismaClient.productOption.update({
+                    where: { id: optionId },
+                    data: { option, quantity }
+                })
+            }
+        }
+        else{
+            quantity = Number(quantity);
+            await prismaClient.productOption.update({
+                where: { id: optionId },
+                data: { option, quantity }
+            })
+        }
+    }
+
+    static async changeImageProduct(imageId: string, file: any){
+        try{
+            return await prismaClient.imagesProduct.update({
+                where: { id: imageId },
+                data: { imageUrl: file.filename }
+            });
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteOptionProduct(optionId: string){
+        try{
+            await prismaClient.productOption.delete({
+                where: { id: optionId }
+            })
+            return true;
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteAllOptionProductById(productId: string){
+        await prismaClient.productOption.deleteMany({
+            where: { productId }
+        })
+    }
+
+    static async deleteAllOptionProductByCategory(categoryName: string){
+
+    }
+
+    static async deleteImageProductById(imageId: string){
+        try{
+            return await prismaClient.imagesProduct.delete({
+                where: { id: imageId }
+            })
+        }
+        catch(error){
+            return false;
+        }
+    }
+
+    static async deleteAllImagesProductById(productId: string){
+        const images = await prismaClient.imagesProduct.findMany({
+            where: { productId }
+        });
+        await prismaClient.imagesProduct.deleteMany({
+            where: { productId }
+        })
+        return images;
+    }
+
+    static async deleteProductById(productId: string){
+        await prismaClient.product.delete({
+            where: { id: productId }
+        })
+    }
 }

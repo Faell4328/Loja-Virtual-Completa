@@ -12,14 +12,13 @@ const confirmationEmailRoute = Router();
 
 const upload = multer(uploadConfig.upload());
 
-
-confirmationEmailRoute.post('/confirmacao', regularlCondicionalRoutes, isNotLogged, emailLimit, upload.none(), validateEmail, (req: Request, res: Response) => {
-    resendEmailConfirmationController(req, res);
+confirmationEmailRoute.put('/confirmacao/:hash', regularlCondicionalRoutes, isNotLogged, confirmationLimit, (req: Request, res: Response) => {
+    emailConfirmationController(req, res);
     return;
 });
 
-confirmationEmailRoute.put('/confirmacao/:hash', regularlCondicionalRoutes, isNotLogged, confirmationLimit, (req: Request, res: Response) => {
-    emailConfirmationController(req, res);
+confirmationEmailRoute.post('/confirmacao', regularlCondicionalRoutes, isNotLogged, emailLimit, upload.none(), validateEmail, (req: Request, res: Response) => {
+    resendEmailConfirmationController(req, res);
     return;
 });
 

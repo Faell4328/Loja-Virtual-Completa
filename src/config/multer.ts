@@ -6,8 +6,9 @@ import crypto from 'crypto';
 type MyFileCallback = (error: Error | null, fileName: string) => void;
 
 export default{
-    upload(logo: boolean = false){
-        const destinationFolder = resolve(__dirname, '..', '..', 'public', 'files');
+    upload(logo: boolean = false, local: string = ''){
+        let destinationFolder = resolve(__dirname, '..', '..', 'public', 'files');
+        destinationFolder += local;
         const allowedExtensions = ['.png', '.jpg', '.jpeg'];
         const storage = multer.diskStorage({
             destination: destinationFolder,
@@ -18,7 +19,7 @@ export default{
                 }
                 else{
                     const fileHash = crypto.randomBytes(16).toString('hex');
-                    return callback(null, `${fileHash}-${file.originalname}`);
+                    return callback(null, fileHash + extname(file.originalname).toLowerCase());
                 }
             }
         });
