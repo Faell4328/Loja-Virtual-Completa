@@ -20,7 +20,7 @@ productRoute.get('/produto/:hash', regularlCondicionalRoutes, (req: Request, res
     return;
 });
 
-productRoute.post('/admin/produto', regularlCondicionalRoutes, isAdmin, upload.array('file'), validateCreatedProduct, (req: Request, res: Response) => {
+productRoute.post('/admin/produto', regularlCondicionalRoutes, isAdmin, upload.array('files'), validateCreatedProduct, (req: Request, res: Response) => {
     createProductController(req, res);
     return;
 });

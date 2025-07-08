@@ -24,7 +24,9 @@ export default async function loginController(req: Request, res: Response){
     }
     else{
         Cookie.setCookie(res, returnService.data.token, returnService.data.expiration);
-        serverSendingPattern(res, '/', null, 'Login realizado', returnService.data.role);
+
+        const { name, email, phone, role } = returnService.data;
+        serverSendingPattern(res, '/', null, 'Login realizado', { name, email, phone, role });
         return;
     }
 

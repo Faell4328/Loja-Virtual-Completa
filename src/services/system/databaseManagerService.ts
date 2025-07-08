@@ -118,7 +118,7 @@ export default class DatabaseManager{
         const createLoginToken = await prismaClient.user.update({
             where: { email, password: hashPassword },
             data: { loginToken: hash, loginTokenExpirationDate: date },
-            select: { role: true, loginToken: true, loginTokenExpirationDate: true }
+            select: { name: true, email: true, phone: true, role: true, loginToken: true, loginTokenExpirationDate: true }
         });
 
         if(!createLoginToken) console.log('erro ao criar o token de login');
@@ -150,7 +150,8 @@ export default class DatabaseManager{
     
     static async consultByLoginToken(token: string){
         let user = await prismaClient.user.findUnique({
-            where: { loginToken: token }
+            where: { loginToken: token },
+            select: { name: true, email: true, phone: true, role: true }
         });
         return user;
     }

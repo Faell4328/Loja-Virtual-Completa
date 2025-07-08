@@ -31,5 +31,5 @@ export default async function loginService(email: string, password: string){
         return returnServicePattern(null, true, false, 'Não foi possível fazer login, por favor, entre em contado com o suporte');
     }
 
-    return returnServicePattern(null, false, true, { status: true, token: returnLogin.loginToken, expiration: returnLogin.loginTokenExpirationDate, role: returnLogin.role });
+    return returnServicePattern(null, false, true, { name: returnLogin.name, email: returnLogin.email, phone: returnLogin.phone, status: true, token: returnLogin.loginToken, expiration: returnLogin.loginTokenExpirationDate, role: returnLogin.role });
 }

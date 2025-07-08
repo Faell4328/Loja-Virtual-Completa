@@ -44,6 +44,6 @@ export async function emailConfirmationController(req: Request, res: Response){
     }
 
     Cookie.setCookie(res, serviceReturn.token, serviceReturn.expiration);
-    serverSendingPattern(res, '/', null, serviceReturn.status, null);
+    serverSendingPattern(res, null, null, serviceReturn.status, null);
     return;
 }
