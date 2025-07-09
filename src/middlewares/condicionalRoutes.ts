@@ -18,7 +18,7 @@ export function regularlCondicionalRoutes(req: Request, res: Response, next: Nex
 
 export function conditionalInstalationRoutes(req: Request, res: Response, next: NextFunction){
     if(statusSystem >= 2){
-        res.status(404).json({"error": "not found"});
+        serverSendingPattern(res, '/', "Essa etapa já foi feita", null, null);
         return;
     }
     next();
