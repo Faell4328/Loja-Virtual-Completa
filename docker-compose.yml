@@ -5,7 +5,7 @@ services:
     container_name: zap_container
     build: .
     ports:
-    - "127.0.0.1:4000:4000"
+    - "127.0.0.1:5001:5001"
     volumes:
     - zap:/src
     environment:

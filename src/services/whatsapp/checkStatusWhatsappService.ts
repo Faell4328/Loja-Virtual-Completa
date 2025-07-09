@@ -2,15 +2,14 @@ import { Response } from 'express';
 import axios from 'axios';
 
 import { setQrcode, setWhatsappReady } from '../../routes/admin';
-import serverSendingPattern from '../../controllers/serverSendingPattern';
 
 export default async function checkStatusWhatsappService(res: Response){
 
     const axiosClient = axios.create({
-        baseURL: 'http://localhost:4000'
+        baseURL: 'http://localhost:5001'
     });
     
-    let retorno
+    let retorno;
 
     try{
         retorno = await axiosClient.get('/status');
@@ -20,19 +19,17 @@ export default async function checkStatusWhatsappService(res: Response){
     catch(error){
         retorno = null;
         console.log('Deu erro - '+error);
-        serverSendingPattern(res, null, 'Erro, favor solicitar ajuda do suporte', null, null)
-        return;
+        return 'Erro, favor solicitar ajuda do suporte';
     }
 
     if(retorno == 'Não iniciado'){
         setWhatsappReady(false);
         setQrcode('');
-        serverSendingPattern(res, null, null, null, null);
+        return 'Whatsapp não conectado';
     }
     else{
         setWhatsappReady(true);
         setQrcode('');
-        serverSendingPattern(res, null, null, 'Whatsapp conectado', null);
+        return 'Whatsapp conectado';
     }
-    return;
 }

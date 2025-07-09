@@ -11,7 +11,7 @@ export default async function passwordRecoveryService(email: string){
         return returnServicePattern(null, true, false, 'Esse email não está cadastrado');
     }
 
-    if(returnConsult.phone && whatsappReady){
+    if(returnConsult.phone && whatsappReady && returnConsult.role == "ADMIN"){
         sendMessageWhatappService('55'+returnConsult.phone, `Olá ${returnConsult.name.split(' ')[0]}, foi solicitado a redefinição de senha. Caso não sejá você solicite ajuda ao suporte`);
     }
 

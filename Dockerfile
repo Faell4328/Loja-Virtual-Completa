@@ -20,4 +20,4 @@ RUN npm install
 
 RUN npx tsc --build
 
-EXPOSE 4000
+EXPOSE 5001

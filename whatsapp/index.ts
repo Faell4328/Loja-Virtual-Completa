@@ -4,7 +4,7 @@ import { Client, LocalAuth, Message } from 'whatsapp-web.js';
 import QRCode from 'qrcode';
 
 const axiosClient = axios.create({
-    baseURL: 'http://192.168.100.72:5000'
+    baseURL: 'http://192.168.100.117:5000'
 })
 
 const app = express();

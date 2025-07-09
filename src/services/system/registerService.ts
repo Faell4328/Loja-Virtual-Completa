@@ -19,7 +19,7 @@ export default async function createUserService(name: string, email: string, pho
     sendEmail.sendEmailConfirmationService(email, hashEmail);
 
     if(phone && whatsappReady){
-        sendMessageWhatappService('55'+phone, `Sejá bem-vindo ${name.split(' ')[0]}, seu cadastro foi realizado com sucesso, é necessário que você acesse eu email e confirme seu email`);
+        sendMessageWhatappService('55'+phone, `Sejá bem-vindo ${name.split(' ')[0]}, seu cadastro foi realizado com sucesso, é necessário que você acesse eu email e ative sua conta`);
     }
     
     return returnServicePattern('/confirmacao', false, true, 'Usuário cadastrado');

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default async function sendMessageWhatappService(number: string, message: string){
-    const clientAxios = axios.create({ baseURL: 'http://localhost:4000' })
+    const clientAxios = axios.create({ baseURL: 'http://localhost:5001' })
 
     try{
         clientAxios.post('/send', {

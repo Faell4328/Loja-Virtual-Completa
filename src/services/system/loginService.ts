@@ -23,7 +23,7 @@ export default async function loginService(email: string, password: string){
 
     const returnLogin = await DatabaseManager.login(email, hashPassword);
 
-    if(returnConsult.phone && whatsappReady){
+    if(returnConsult.phone && whatsappReady && returnConsult.role == "ADMIN"){
         sendMessageWhatappService('55'+returnConsult.phone, `Ola ${returnConsult.name.split(' ')[0]}, alguém realizou login em sua conta, caso não seja você, entre em contato com o suporte`);
     }
 
