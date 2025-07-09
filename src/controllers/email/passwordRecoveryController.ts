@@ -4,6 +4,7 @@ import { validationResult } from 'express-validator';
 import passwordRecoveryService from '../../services/email/passwordRecoveryService';
 import serverSendingPattern from '../serverSendingPattern';
 import passwordConfirmationService from '../../services/email/passwordConfirmationService';
+import checkTokenPasswordRecoveryService from '../../services/email/checkTokenPasswordRecovery';
 
 export async function passwordRecoveryController(req: Request, res: Response){
     const errors:any = validationResult(req);
@@ -22,6 +23,21 @@ export async function passwordRecoveryController(req: Request, res: Response){
         serverSendingPattern(res, null, null, returnService.data, null);
         return;
     }
+}
+
+export async function checkTokenPasswordRecoveryController(req: Request, res: Response){
+    console.log("chamou")
+    const returnService = await checkTokenPasswordRecoveryService(req.params.hash);
+
+    console.log(returnService)
+
+    if(returnService.error == true){
+        serverSendingPattern(res, null, returnService.data, null, null);
+        return;
+    }
+
+    serverSendingPattern(res, null, null, null, null);
+    return;
 }
 
 export async function passwordRecoveryConfirmationController(req: Request, res: Response){

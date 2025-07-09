@@ -81,7 +81,6 @@ export async function changeCategoryController(req: Request, res: Response){
         return;
     }
 
-    console.log(returnServiceCategory.data)
     serverSendingPattern(res, returnServiceCategory.redirect, null, returnServiceCategory.data, null);
     return;
 }

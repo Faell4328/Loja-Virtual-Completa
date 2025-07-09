@@ -10,7 +10,7 @@ export const loginLimit = rateLimit({
 
 export const confirmationLimit = rateLimit({
     windowMs: 10 * 60 * 1000,
-    max: 5,
+    max: 10,
     statusCode: 200,
     message: { error: 'Você excedeu o limite de tentativas, tente novamente em 10 minutos' }
 })

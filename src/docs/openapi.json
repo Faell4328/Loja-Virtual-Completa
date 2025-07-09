@@ -908,6 +908,71 @@
             }
         },
         "/recuperacao/senha/{hash}": {
+            "get": {
+                "summary": "Rota para consultar token de redefinição de senha",
+                "tags": ["Recuperar senha"],
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "É o token enviado no email do usário, para redefinir a senha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 1":{
+                                        "value": {
+                                            "redirect": "/instalacao/config",
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 2":{
+                                        "value": {
+                                            "redirect": "/instalacao/admin",
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Token invalido": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Token inválido",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Token expirado (ele tem duração de 5 minutos)": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Token expirado, foi enviado para seu email um novo link",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "put": {
                 "summary": "Rota para redefinir a senha",
                 "tags": ["Recuperar senha"],
@@ -977,6 +1042,14 @@
                                         "value": {
                                             "redirect": null,
                                             "error": "Token expirado, foi enviado para seu email um novo link",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Token invalido": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Token inválido",
                                             "ok": null,
                                             "data": null
                                         }
