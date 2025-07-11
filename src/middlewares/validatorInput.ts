@@ -86,7 +86,7 @@ export const validateUpdateInformationUser = [
         .isLength({ min: 2 }).withMessage('Seu nome deve ter no mínimo 2 caracteres')
         .isLength({ max: 100 }).withMessage('Seu nome deve ter no máximo 100 caracteres'),
     body('phone')
-        .optional()
+        .notEmpty().withMessage('Falta o telefone')
         .trim()
         .escape()
         .isLength({ min: 10, max: 10 }).withMessage('Seu número deve ter 10 caracteres'),

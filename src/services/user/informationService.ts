@@ -24,6 +24,7 @@ export async function updateInformationUserService(userId: string, name: string,
     const returnDbStatusUpdateUserInformation = await DatabaseManager.updateUserInformation(userId, name, phone);
 
     if(description == undefined && returnDbStatusUpdateUserInformation){
+        deleteUserAddressInformationService(userId);
         return returnServicePattern(null, false, true, 'Informação atualizada');
     }
     else if(description == undefined){
