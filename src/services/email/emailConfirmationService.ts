@@ -34,5 +34,5 @@ export async function emailConfirmationService(hash: string){
     DatabaseManager.tokenEmailConfirmed(user.id);
     const returnDB = await DatabaseManager.login(email, hashPassword);
 
-    return { status: 'Email válidado', token: returnDB.loginToken, expiration: returnDB.loginTokenExpirationDate };
+    return { status: 'Email válidado', token: returnDB?.token, expiration: returnDB?.tokenExpirationDate };
 }

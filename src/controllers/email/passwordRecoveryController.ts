@@ -26,10 +26,7 @@ export async function passwordRecoveryController(req: Request, res: Response){
 }
 
 export async function checkTokenPasswordRecoveryController(req: Request, res: Response){
-    console.log("chamou")
     const returnService = await checkTokenPasswordRecoveryService(req.params.hash);
-
-    console.log(returnService)
 
     if(returnService.error == true){
         serverSendingPattern(res, null, returnService.data, null, null);

@@ -23,13 +23,15 @@ export default async function loginService(email: string, password: string){
 
     const returnLogin = await DatabaseManager.login(email, hashPassword);
 
-    if(returnConsult.phone && whatsappReady && returnConsult.role == "ADMIN"){
+    if(!returnLogin?.token || !returnLogin?.tokenExpirationDate){
+        return returnServicePattern(null, true, false, 'Não foi possível fazer login, por favor, entre em contado com o suporte');
+    }
+    
+    if(returnConsult?.phone && whatsappReady && returnConsult?.role == "ADMIN"){
         sendMessageWhatappService('55'+returnConsult.phone, `Ola ${returnConsult.name.split(' ')[0]}, alguém realizou login em sua conta, caso não seja você, entre em contato com o suporte`);
     }
 
-    if(returnLogin.loginToken == null || returnLogin.loginTokenExpirationDate == null){
-        return returnServicePattern(null, true, false, 'Não foi possível fazer login, por favor, entre em contado com o suporte');
-    }
+    const { name, phone, role, token, tokenExpirationDate: expiration } = returnLogin;
 
-    return returnServicePattern(null, false, true, { name: returnLogin.name, email: returnLogin.email, phone: returnLogin.phone, status: true, token: returnLogin.loginToken, expiration: returnLogin.loginTokenExpirationDate, role: returnLogin.role });
+    return returnServicePattern(null, false, true, { name, email, phone, role, token, expiration });
 }

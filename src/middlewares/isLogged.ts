@@ -9,21 +9,21 @@ export default async function isLogged(req: Request, res: Response, next: NextFu
         return;
     }
 
-    let user = await DatabaseManager.validateLoginToken(req.cookies['token']);
+    let loginToken = await DatabaseManager.validateLoginToken(req.cookies['token']);
 
-    if(!user){
+    if(!loginToken){
         serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
         return;
     }
 
-    const { loginTokenExpirationDate } = user;
+    const { tokenExpirationDate } = loginToken;
 
-    if(loginTokenExpirationDate === null || loginTokenExpirationDate < new Date()){
+    if(tokenExpirationDate === null || tokenExpirationDate < new Date()){
         serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
         return;
     }
 
-    req.userId = user.id;
+    req.userId = loginToken.userId;
 
     next();
     return;

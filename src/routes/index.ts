@@ -8,9 +8,9 @@ const router = Router();
 
 router.get('/', regularlCondicionalRoutes, async (req: Request, res: Response) => {
     if(req.cookies['token'] !== undefined && req.cookies['token'].length == 128){
-        const user = await DatabaseManager.consultByLoginToken(req.cookies['token']);
-        if(user){
-            serverSendingPattern(res, null, null, null, user)
+        const loginToken = await DatabaseManager.consultByLoginToken(req.cookies['token']);
+        if(loginToken){
+            serverSendingPattern(res, null, null, null, loginToken.user)
         }
         else{
             serverSendingPattern(res, null, null, null, "OFF");

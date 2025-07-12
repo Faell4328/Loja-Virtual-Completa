@@ -9,16 +9,16 @@ export default async function isNotLogged(req: Request, res: Response, next: Nex
         return;
     }
 
-    let user = await DatabaseManager.validateLoginToken(req.cookies['token']);
+    let loginToken = await DatabaseManager.validateLoginToken(req.cookies['token']);
 
-    if(!user){
+    if(!loginToken){
         next();
         return;
     }
 
-    const { loginTokenExpirationDate } = user;
+    const { tokenExpirationDate } = loginToken;
 
-    if(loginTokenExpirationDate === null || loginTokenExpirationDate < new Date()){
+    if(tokenExpirationDate === null || tokenExpirationDate < new Date()){
         next();
         return;
     }

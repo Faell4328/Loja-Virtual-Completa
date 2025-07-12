@@ -4,17 +4,19 @@ import serverSendingPattern from '../serverSendingPattern';
 import logOutService from '../../services/system/logOutService';
 
 export default function logOutController(req: Request, res: Response){
-    if(req.userId != undefined && req.userId != null){
-        const returnService = logOutService(req.userId);
+    if(req.userId && req.cookies['token']){
+
+        const returnService = logOutService(req.cookies['token']);
+
         if(returnService.error == true){
             serverSendingPattern(res, null, returnService.data, null, null);
+            return;
         }
-        else{
-            serverSendingPattern(res, null, null, returnService.data, null);
-        }
+        serverSendingPattern(res, null, null, returnService.data, null);
+        return;
     }    
     else{
         serverSendingPattern(res, null, 'Você não está logado', null, null);
+        return;
     }
-    return;
 }

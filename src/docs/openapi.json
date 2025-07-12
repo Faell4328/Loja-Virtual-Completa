@@ -787,7 +787,7 @@
             }
         },
         "/deslogar": {
-            "put": {
+            "delete": {
                 "summary": "Rota para dar logout",
                 "tags": ["Cadastro, Login e LogOut"],
                 "responses": {

@@ -9,16 +9,17 @@ export default async function isAdmin(req: Request, res: Response, next: NextFun
         return;
     }
 
-    let user = await DatabaseManager.validateLoginToken(req.cookies['token'] as string);
+    let loginToken = await DatabaseManager.validateLoginToken(req.cookies['token'] as string);
 
-    if(!user){
+    if(!loginToken){
         serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
         return;
     }
 
-    const { loginTokenExpirationDate, role } = user;
+    const { tokenExpirationDate } = loginToken;
+    const { role } = loginToken.user;
 
-    if(loginTokenExpirationDate === null || loginTokenExpirationDate < new Date()){
+    if(tokenExpirationDate === null || tokenExpirationDate < new Date()){
         serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
         return;
     }
@@ -27,7 +28,7 @@ export default async function isAdmin(req: Request, res: Response, next: NextFun
         return;
     }
 
-    req.userId = user.id;
+    req.userId = loginToken.userId;
 
     next();
     return;

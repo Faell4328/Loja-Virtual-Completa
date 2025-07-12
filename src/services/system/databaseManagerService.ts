@@ -112,32 +112,47 @@ export default class DatabaseManager{
     }
 
     static async login (email: string, hashPassword: string){
-        const date = new Date();
-        date.setDate(date.getDate() + 20);
-        let hash = crypto.randomBytes(64).toString('hex');
-        const createLoginToken = await prismaClient.user.update({
+        const tokenExpirationDate = new Date();
+        tokenExpirationDate.setDate(tokenExpirationDate.getDate() + Number(process.env.EXPIRATION_DATE_LOGIN_TOKEN));
+        let nameToken = crypto.randomBytes(25).toString('hex');
+        let token = crypto.randomBytes(64).toString('hex');
+        
+        const user = await prismaClient.user.findUnique({
             where: { email, password: hashPassword },
-            data: { loginToken: hash, loginTokenExpirationDate: date },
-            select: { name: true, email: true, phone: true, role: true, loginToken: true, loginTokenExpirationDate: true }
+            select: { id: true, email: true, name: true, phone: true, role: true }
         });
 
-        if(!createLoginToken) console.log('erro ao criar o token de login');
-        return createLoginToken;
+        if(user?.id){
+            const { name, email, phone, role } = user;
+
+            const createLoginToken = await prismaClient.loginToken.create({
+                data: { name: nameToken, token, tokenExpirationDate, userId: user?.id },
+            });
+            
+            if(!createLoginToken) console.log('erro ao criar o token de login');
+            return { name, email, phone, role, token, tokenExpirationDate };
+        }
+        
+        console.log("Erro ao gerar o token de login na confirmação de email");
+        return null;
     }
 
-    static async logOut(userId: string){
-        const user = await prismaClient.user.update({
-            where: { id: userId },
-            data: { loginToken: null, loginTokenExpirationDate: null },
-            select: { id: true }
-        });
+    static async logOut(token: string){
+        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
-        return user;
+        const user = await prismaClient.loginToken.delete({
+            where: { token }
+        })
+
+        return user ? true : null;
     }
 
     static async validateLoginToken(token: string){
-        return await prismaClient.user.findUnique({
-            where: { loginToken: token }
+        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+
+        return await prismaClient.loginToken.findUnique({
+            where: { token },
+            select: { token: true, tokenExpirationDate: true, userId: true, user: { select: { role: true } } }
         });
     }
 
@@ -149,10 +164,13 @@ export default class DatabaseManager{
     }
     
     static async consultByLoginToken(token: string){
-        let user = await prismaClient.user.findUnique({
-            where: { loginToken: token },
-            select: { name: true, email: true, phone: true, role: true }
+        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+
+        let user = await prismaClient.loginToken.findUnique({
+            where: { token },
+            select: { user: { select: { name: true, email: true, phone: true, role: true } } }
         });
+
         return user;
     }
 

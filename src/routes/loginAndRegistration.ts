@@ -25,7 +25,7 @@ loginAndRegistrationRoute.post('/cadastrar', regularlCondicionalRoutes, isNotLog
     return;
 });
 
-loginAndRegistrationRoute.put('/deslogar', regularlCondicionalRoutes, isLogged, (req: Request, res: Response) => {
+loginAndRegistrationRoute.delete('/deslogar', regularlCondicionalRoutes, isLogged, (req: Request, res: Response) => {
     logOutController(req, res);
     return;
 });
