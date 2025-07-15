@@ -2049,6 +2049,11 @@
                                         "example": "Produto feito com dente de galinha",
                                         "description": "Vai descrever o produto"
                                     },
+                                    "homePageSession": {
+                                        "type": "string",
+                                        "example": "ALL",
+                                        "description": "É a sessão onde será exibido na página home"
+                                    },
                                     "option": {
                                         "type": "string",
                                         "example": "12W",

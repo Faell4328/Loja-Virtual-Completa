@@ -90,16 +90,23 @@ enum StatusProduct {
   NO_STOCK
 }
 
+enum HomePageSession {
+  PROMOTION
+  NEW
+  REMAINING
+}
+
 model Product {
-  id             String        @id @default(uuid())
-  name           String        @db.VarChar(100)
+  id             String          @id @default(uuid())
+  name           String          @db.VarChar(100)
   originalPrice  Int
   promotionPrice Int?
   categoryId     String
-  description    String?       @db.VarChar(400)
+  description    String?         @db.VarChar(400)
   status         StatusProduct
-  creationDate   DateTime      @default(now())
+  creationDate   DateTime        @default(now())
   updateDate     DateTime?
+  homeSession    HomePageSession
 
   option        productOption[]
   imagesProduct ImagesProduct[]

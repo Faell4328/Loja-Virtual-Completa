@@ -181,6 +181,11 @@ export const validateCreatedProduct = [
         .escape()
         .isLength({ max: 400 }).withMessage('A descrição deve ter no máximo 400 caracteres'),
 
+    body('homeSession')
+        .notEmpty().withMessage('Falta a seção da home, onde o produto vai ficar')
+        .trim()
+        .escape(),
+
     body('option')
         .optional()
         .trim()

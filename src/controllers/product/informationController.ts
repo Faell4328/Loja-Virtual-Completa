@@ -42,7 +42,7 @@ export async function createProductController(req: Request, res: Response){
         return;
     }
 
-    const { name, originalPrice, promotionPrice, categoryId, description } = req.body;
+    const { name, originalPrice, promotionPrice, categoryId, description, homeSession } = req.body;
     const { option, quantity } = req.body;
     const { files } = req;
 
@@ -57,7 +57,7 @@ export async function createProductController(req: Request, res: Response){
         return;
     }
 
-    const returnServiceProduct = await createProductService(name, Number(originalPrice), Number(promotionPrice), categoryId, description, option, quantity, files);
+    const returnServiceProduct = await createProductService(name, Number(originalPrice), Number(promotionPrice), categoryId, description, homeSession, option, quantity, files);
 
     if(returnServiceProduct.error == true){
         deleteImagesLocal(files);

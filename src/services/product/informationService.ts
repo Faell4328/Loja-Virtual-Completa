@@ -21,13 +21,13 @@ export async function listSpecificProductService(productId: string){
     return returnServicePattern(null, false, true, returnDbSpecificProduct);
 }
 
-export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, option: string | string [], quantity: string | string [], files: any){
+export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'REMAINING', option: string | string [], quantity: string | string [], files: any){
     if(await DatabaseManager.verifyExistenceCategory(categoryId) <= 0){
         return returnServicePattern(null, true, false, 'Categoria fornecida não existe');
     }
 
-    const returnDbProduct = await DatabaseManager.createProduct(name, originalPrice, promotionPrice, categoryId, description, 'STOCK');
-    await DatabaseManager.addoptionProduct(returnDbProduct.id, option, quantity);
+    const returnDbProduct = await DatabaseManager.createProduct(name, originalPrice, promotionPrice, categoryId, description, homeSession, 'STOCK');
+    await DatabaseManager.addOptionProduct(returnDbProduct.id, option, quantity);
     await DatabaseManager.addImagesProduct(returnDbProduct.id, files);
 
     return returnServicePattern(null, false, true, 'Produto cadastrado');
@@ -41,7 +41,7 @@ export async function createOptionProductService(productId: string, option: stri
         return returnServicePattern(null, true, false, 'A opção fornecida já está cadastrado');
     }
 
-    await DatabaseManager.addoptionProduct(productId, option, quantity);
+    await DatabaseManager.addOptionProduct(productId, option, quantity);
 
     return returnServicePattern(null, false, true, 'Opção cadastrada');
 }

@@ -357,17 +357,17 @@ export default class DatabaseManager{
         });
     }
 
-    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, status: 'STOCK' | 'NO_STOCK'){
+    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'REMAINING', status: 'STOCK' | 'NO_STOCK'){
         originalPrice = Number(originalPrice);
         promotionPrice = Number(promotionPrice);
         const returnProduct = await prismaClient.product.create({
-            data: { name, originalPrice, promotionPrice, categoryId, description, status },
+            data: { name, originalPrice, promotionPrice, categoryId, description, homeSession, status },
             select: { id: true }
         })
         return returnProduct;
     }
 
-    static async addoptionProduct(productId: string, optionProduct: string | string[], quantityProduct: string | string[]){
+    static async addOptionProduct(productId: string, optionProduct: string | string[], quantityProduct: string | string[]){
         try{
             if(Array.isArray(optionProduct)){
                 for(var cont = 0; cont < optionProduct.length; cont++){
