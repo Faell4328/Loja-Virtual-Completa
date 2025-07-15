@@ -318,17 +318,56 @@ export default class DatabaseManager{
         return category;
     }
 
-    static async listAllProducts(){
-        const products = await prismaClient.product.findMany({
-            select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } }
-        });
-        return products;
-    }
+    static async listAllProducts(session: "PROMOTION" | "NEW" | "HIGHLIGHTS" | undefined, page: number | undefined){
+        let skip = 0;
+        if(page !== undefined && page !== 1){
+            skip = (page-1)*5
+        }
+
+        if(session !== undefined && page !== undefined){
+            const products = await prismaClient.product.findMany({
+                select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } },
+                where: { homeSession: session },
+                skip: skip,
+                take: 5
+            });
+            return products;
+        }
+        else if(session == undefined && page !== undefined){
+            const products = await prismaClient.product.findMany({
+                select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } },
+                skip: skip,
+                take: 5
+            });
+            return products;
+        }
+        else if(session != undefined && page == undefined){
+            const products = await prismaClient.product.findMany({
+                select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } },
+                where: { homeSession: session },
+            });
+            return products;
+        }
+        else{
+            const products = await prismaClient.product.findMany({
+                select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } },
+            });
+            return products;
+        }
+    }    
 
     static async listSpecificProduct(productId: string){
         const product = await prismaClient.product.findUnique({
             where: { id: productId },
-            select: {name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, option: { select: { id: true, option: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
+            select: { name: true, originalPrice: true, promotionPrice: true, description: true, category: { select: { id: true, name: true } }, option: { select: { id: true, option: true, quantity: true } }, imagesProduct: { select: { id: true, imageUrl: true } } }
+        });
+        return product;
+    }
+
+    static async searchProduct(value: string){
+        const product = await prismaClient.product.findMany({
+            select: { id: true, name: true, imagesProduct: { select: { imageUrl: true } } },
+            where: { name: { contains: value, mode: 'insensitive' } }
         });
         return product;
     }
@@ -357,7 +396,7 @@ export default class DatabaseManager{
         });
     }
 
-    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'REMAINING', status: 'STOCK' | 'NO_STOCK'){
+    static async createProduct(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'HIGHLIGHTS', status: 'STOCK' | 'NO_STOCK'){
         originalPrice = Number(originalPrice);
         promotionPrice = Number(promotionPrice);
         const returnProduct = await prismaClient.product.create({

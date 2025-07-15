@@ -2,8 +2,10 @@ import { deleteImagesLocal } from "../../tools/deleteImagesLocal";
 import returnServicePattern from "../returnServicePattern";
 import DatabaseManager from "../system/databaseManagerService";
 
-export async function listAllProductsService(){
-    const returnDbAllProducts = await DatabaseManager.listAllProducts();
+export async function listAllProductsService(session: "PROMOTION" | "NEW" | "HIGHLIGHTS" | undefined, page: number | undefined){
+
+    const returnDbAllProducts = await DatabaseManager.listAllProducts(session, page);
+
     if(returnDbAllProducts == null || returnDbAllProducts.length == 0){
         return returnServicePattern(null, true, false, 'Você não possui nenhum produto cadastrado');
     }
@@ -21,7 +23,13 @@ export async function listSpecificProductService(productId: string){
     return returnServicePattern(null, false, true, returnDbSpecificProduct);
 }
 
-export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'REMAINING', option: string | string [], quantity: string | string [], files: any){
+export async function searchProductService(value: string){
+    const returnDbSpecificProduct= await DatabaseManager.searchProduct(value);
+
+    return returnServicePattern(null, false, true, returnDbSpecificProduct);
+}
+
+export async function createProductService(name: string, originalPrice: number, promotionPrice: number, categoryId: string, description: string, homeSession: 'PROMOTION' | 'NEW' | 'HIGHLIGHTS', option: string | string [], quantity: string | string [], files: any){
     if(await DatabaseManager.verifyExistenceCategory(categoryId) <= 0){
         return returnServicePattern(null, true, false, 'Categoria fornecida não existe');
     }

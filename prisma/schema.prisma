@@ -93,7 +93,7 @@ enum StatusProduct {
 enum HomePageSession {
   PROMOTION
   NEW
-  REMAINING
+  HIGHLIGHTS
 }
 
 model Product {

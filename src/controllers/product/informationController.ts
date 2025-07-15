@@ -1,11 +1,39 @@
 import { Request, Response } from 'express';
-import { changeImagemProductService, changeProductService, changeOptionProductService, createImageProductService, createProductService, createOptionProductService, deleteImageProductService, deleteProductService, deleteOptionProductService, listAllProductsService, listSpecificProductService } from '../../services/product/informationService';
+import { changeImagemProductService, changeProductService, changeOptionProductService, createImageProductService, createProductService, createOptionProductService, deleteImageProductService, deleteProductService, deleteOptionProductService, listAllProductsService, listSpecificProductService, searchProductService } from '../../services/product/informationService';
 import serverSendingPattern from '../serverSendingPattern';
 import { validationResult } from 'express-validator';
 import { deleteImagesLocal } from '../../tools/deleteImagesLocal';
 
 export async function listAllProductsController(req: Request, res: Response){
-    const returnServiceAllProducts = await listAllProductsService();
+    if(req.query.session !== undefined  && req.query.session !== "promocao" && req.query.session !== "novidade" && req.query.session !== "destaque"){
+        serverSendingPattern(res, null, "A query 'session', está com parâmetro inválido", null, null);
+        return;
+    }
+    else if(req.query.page !== undefined && isNaN(Number(req.query.page)) || Number(req.query.page) <= 0){
+        serverSendingPattern(res, null, "A query 'page', está com parâmetro inválido (apenas número positivo, ex: 1, 2, ...)", null, null);
+        return;
+    }
+
+    let session: "PROMOTION" | "NEW" | "HIGHLIGHTS" | undefined;
+    switch(req.query.session){
+        case "promocao":
+            session = "PROMOTION"
+            break;
+        case "novidade":
+            session = "NEW"
+            break;
+        case "destaque":
+            session = "HIGHLIGHTS"
+            break;
+    }
+
+    let page = undefined;
+    
+    if(req.query.page != undefined && !isNaN(Number(req.query.page))){
+        page = Number(req.query.page)
+    }
+
+    const returnServiceAllProducts = await listAllProductsService(session, page);
     
     if(returnServiceAllProducts.error == true){
         serverSendingPattern(res, returnServiceAllProducts.redirect, returnServiceAllProducts.data, null, null);
@@ -27,6 +55,20 @@ export async function listSpecificProductController(req: Request, res: Response)
     }
     
     serverSendingPattern(res, returnServiceSpecificProduct.redirect, null, null, returnServiceSpecificProduct.data);
+    return;
+}
+
+export async function searchProductController(req: Request, res: Response){
+    const value = req.params.value;
+
+    if(!value){
+        serverSendingPattern(res, null, "Não foi enviado nada na consulta", null, null);
+        return
+    }
+
+    const returnSearchProduct = await searchProductService(value);
+
+    serverSendingPattern(res, returnSearchProduct.redirect, null, null, returnSearchProduct.data);
     return;
 }
 

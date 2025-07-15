@@ -1910,6 +1910,26 @@
                 "summary": "Rota para listar todos os produtos",
                 "description": "O retorno da rota sofrerá alteração posteriormente. Colocando uma nova coluna para imagem principal, onde o usuário irá escolher ela, e não sendo desse jeito que está",
                 "tags": ["Produto"],
+                "parameters":[
+                    {
+                        "name": "session",
+                        "in": "query",
+                        "example": "promocao",
+                        "description": "É o filtro, informando de qual seção deseja ( \"promocao\", \"novidade\", \"destaque\")",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "É o filtro, informando de qual página você deseja, já que é retornado em 20 em 20",
+                        "example": "1",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -2014,6 +2034,66 @@
                 }
             }
         },
+        "/produto/procurar/{value}": {
+            "get": {
+                "summary": "",
+                "tags": ["Produto"],
+                "parameters": [
+                    {
+                        "name": "value",
+                        "in": "path",
+                        "description": "",
+                        "required": "true",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": null,
+                                            "data": {
+                                                "id": "id do produto",
+                                                "name": "nome do produto",
+                                                "imagesProduct": [
+                                                    {
+                                                        "id": "id da imagem",
+                                                        "imageUrl": "nome do arquivo e sua extensão (pega apenas uma)"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "Consulta vazia": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Não foi enviado nada na consulta",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Produto não existe": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": null,
+                                            "data": []
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/produto": {
             "post": {
                 "summary": "Rota para cadastrar um produto",
@@ -2049,9 +2129,9 @@
                                         "example": "Produto feito com dente de galinha",
                                         "description": "Vai descrever o produto"
                                     },
-                                    "homePageSession": {
+                                    "homeSession": {
                                         "type": "string",
-                                        "example": "ALL",
+                                        "example": "PROMOTION",
                                         "description": "É a sessão onde será exibido na página home"
                                     },
                                     "option": {

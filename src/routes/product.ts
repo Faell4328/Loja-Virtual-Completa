@@ -4,7 +4,7 @@ import multer from 'multer';
 import uploadConfig from '../config/multer';
 import isAdmin from '../middlewares/isAdmin';
 import { regularlCondicionalRoutes } from '../middlewares/condicionalRoutes';
-import { changeImagemProductController, changeProductController, changeOptionProductController, createImageProductController, createProductController, createOptionProductController, deleteImageProductController, deleteProductController, deleteOptionProductController, listAllProductsController, listSpecificProductController } from '../controllers/product/informationController';
+import { changeImagemProductController, changeProductController, changeOptionProductController, createImageProductController, createProductController, createOptionProductController, deleteImageProductController, deleteProductController, deleteOptionProductController, listAllProductsController, listSpecificProductController, searchProductController } from '../controllers/product/informationController';
 import { validateChangedProduct, validateOptionProduct, validateCreatedProduct, validateFile } from '../middlewares/validatorInput';
 
 const productRoute = Router();
@@ -17,6 +17,11 @@ productRoute.get('/produtos', regularlCondicionalRoutes, (req: Request, res: Res
 
 productRoute.get('/produto/:hash', regularlCondicionalRoutes, (req: Request, res: Response) => {
     listSpecificProductController(req, res);
+    return;
+});
+
+productRoute.get('/produto/procurar/:value', regularlCondicionalRoutes, (req: Request, res: Response) => {
+    searchProductController(req, res);
     return;
 });
 
