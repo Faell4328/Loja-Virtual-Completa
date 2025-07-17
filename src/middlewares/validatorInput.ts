@@ -185,7 +185,7 @@ export const validateCreatedProduct = [
         .notEmpty().withMessage('Falta a seção da home, onde o produto vai ficar')
         .trim()
         .escape()
-        .isIn(['PROMOTION', 'NEW', 'HIGHLIGHTS']).withMessage('Status inválido. Valores permitidos: \'PROMOTIO\', \'NEW\', \'HIGHLIGHTS\''),
+        .isIn(['PROMOTION', 'NEW', 'HIGHLIGHTS']).withMessage('Status inválido. Valores permitidos: \'PROMOTION\', \'NEW\', \'HIGHLIGHTS\''),
 
     body('option')
         .optional()

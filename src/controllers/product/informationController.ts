@@ -88,14 +88,19 @@ export async function createProductController(req: Request, res: Response){
     const { option, quantity } = req.body;
     const { files } = req;
 
-    if(Number(originalPrice) <= Number(promotionPrice)){
-        deleteImagesLocal(files);
-        serverSendingPattern(res, null, 'O valor de promoção é maior ou igual ao valor original, isso não é permitido', null, null);
-        return;
-    }
-    else if(Array.isArray(option) && Array.isArray(quantity) && option.length !== quantity.length){
+    if((Array.isArray(option) || Array.isArray(quantity)) && (!Array.isArray(option) || !Array.isArray(quantity))){
         deleteImagesLocal(files);
         serverSendingPattern(res, null, 'A quantidade de opções e a quantidade fornecida não são iguais', null, null);
+        return;
+    }
+    else if((Array.isArray(option) && Array.isArray(quantity)) && option.length !== quantity.length){
+        deleteImagesLocal(files);
+        serverSendingPattern(res, null, 'A quantidade de opções e a quantidade fornecida não são iguais', null, null);
+        return;
+    }
+    else if(Number(originalPrice) <= Number(promotionPrice)){
+        deleteImagesLocal(files);
+        serverSendingPattern(res, null, 'O valor de promoção é maior ou igual ao valor original, isso não é permitido', null, null);
         return;
     }
 

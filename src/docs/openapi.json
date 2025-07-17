@@ -2151,7 +2151,7 @@
                                         "description": "Imagem do produto"
                                     }
                                 },
-                                "required": ["name", "originalPrice", "promotionPrice", "categoryId"]
+                                "required": ["name", "originalPrice", "promotionPrice", "categoryId", "homeSession"]
                             }
                         }
                     }
