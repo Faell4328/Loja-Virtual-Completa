@@ -6,7 +6,7 @@ export async function listAllProductsService(session: "PROMOTION" | "NEW" | "HIG
 
     const returnDbAllProducts = await DatabaseManager.listAllProducts(session, page);
 
-    if(returnDbAllProducts == null || returnDbAllProducts.length == 0){
+    if(returnDbAllProducts == null || returnDbAllProducts.length == 0 && session == undefined){
         return returnServicePattern(null, true, false, 'Você não possui nenhum produto cadastrado');
     }
 
