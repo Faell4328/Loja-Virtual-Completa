@@ -275,7 +275,7 @@ export default class DatabaseManager{
     static async listAllProductsInCategory(categoryId: string){
         const categoryProducts = await prismaClient.product.findMany({
             where: { categoryId },
-            select: { id: true, name: true, originalPrice: true, promotionPrice: true }
+            select: { id: true, name: true, originalPrice: true, promotionPrice: true, imagesProduct: { select: { imageUrl: true }, take: 1 } },
         });
         return categoryProducts;
     }
