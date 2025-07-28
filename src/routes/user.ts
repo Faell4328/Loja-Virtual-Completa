@@ -3,8 +3,8 @@ import multer from 'multer';
 
 import uploadConfig from '../config/multer';
 import isLogged from '../middlewares/isLogged';
-import { validateUpdateInformationUser } from '../middlewares/validatorInput';
-import { deleteUserAddressInformationController, listUserInformationController, uploadUserInformationController } from '../controllers/user/informationController';
+import { validateInformationUser, validatesInformationAddress } from '../middlewares/validatorInput';
+import { createAddressController, deleteUserAddressController, listUserInformationController, updateAddressController, updateUserInformationController } from '../controllers/user/informationController';
 
 const userRoute = Router();
 
@@ -15,13 +15,23 @@ userRoute.get('/usuario', isLogged, (req: Request, res: Response) => {
     return;
 });
 
-userRoute.put('/usuario', isLogged, upload.none(), validateUpdateInformationUser, (req: Request, res: Response) => {
-    uploadUserInformationController(req, res);
+userRoute.put('/usuario', isLogged, upload.none(), validateInformationUser, (req: Request, res: Response) => {
+    updateUserInformationController(req, res);
     return;
 });
 
-userRoute.delete('/usuario/endereco', isLogged, (req: Request, res: Response) => {
-    deleteUserAddressInformationController(req, res);
+userRoute.post('/usuario/endereco', isLogged, upload.none(), validatesInformationAddress, (req: Request, res: Response) => {
+    createAddressController(req, res);
+    return;
+});
+
+userRoute.put('/usuario/endereco/:hash', isLogged, upload.none(), validatesInformationAddress, (req: Request, res: Response) => {
+    updateAddressController(req, res);
+    return;
+});
+
+userRoute.delete('/usuario/endereco/:hash', isLogged, (req: Request, res: Response) => {
+    deleteUserAddressController(req, res);
     return;
 });
 

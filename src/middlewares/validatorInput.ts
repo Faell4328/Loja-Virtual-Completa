@@ -78,7 +78,7 @@ export const validatePassword = [
         .notEmpty().withMessage('Falta a senha 2')
 ]
 
-export const validateUpdateInformationUser = [
+export const validateInformationUser = [
     body('name')
         .notEmpty().withMessage('Falta o nome')
         .trim()
@@ -90,45 +90,47 @@ export const validateUpdateInformationUser = [
         .trim()
         .escape()
         .isLength({ min: 10, max: 10 }).withMessage('Seu número deve ter 10 caracteres'),
+];
 
+export const validatesInformationAddress = [
     body('description')
-        .optional()
+        .notEmpty().withMessage('Falta a descrição')
         .trim()
         .escape()
         .isLength({ max: 100 }).withMessage('A descrição não pode passar de 100 caracteres'),
 
     body('street')
-        .optional()
+        .notEmpty().withMessage('Falta a rua')
         .trim()
         .escape()
         .isLength({ max: 100 }).withMessage('Nome da rua não pode passar de 100 caracteres'),
 
     body('number')
-        .optional()
+        .notEmpty().withMessage('Falta o número')
         .trim()
         .escape()
         .isLength({ max: 20 }).withMessage('O número não pode passar de 20 caracteres'),
 
     body('neighborhood')
-        .optional()
+        .notEmpty().withMessage('Falta o bairro')
         .trim()
         .escape()
         .isLength({ max: 100 }).withMessage('O bairro não pode passar de 100 caracteres'),
     
     body('zipCode')
-        .optional()
+        .notEmpty().withMessage('Falta o estado')
         .trim()
         .escape()
         .isLength({ max: 9 }).withMessage('O CEP não pode passar de 9 caracteres'),
 
     body('city')
-        .optional()
+        .notEmpty().withMessage('Falta a cidade')
         .trim()
         .escape()
         .isLength({ max: 100 }).withMessage('A cidade não pode passar de 100 caracteres'),
     
     body('state')
-        .optional()
+        .notEmpty().withMessage('Falta o estado')
         .trim()
         .escape()
         .isLength({ min: 2, max: 2 }).withMessage('O estado deve ter 2 caracteres'),

@@ -1173,7 +1173,7 @@
             },
             "put": {
                 "summary": "Rota para atualizar informações de usuário",
-                "description": "O endereço é opcional, mas ele se torna obrigatório caso você preencha algum dos campos (descrição, rua, número, bairro, cep e estado), com excessão do \"complemento\"",
+                "description": "Atualizar informações como nome e telefone",
                 "tags": ["Usuário"],
                 "requestBody": {
                     "content": {
@@ -1190,46 +1190,6 @@
                                         "type": "string",
                                         "example": "20028922",
                                         "description": "Tem que ser um número valido e seguir o seguinte formato: \"31xxxxxxxx\", não precisa do \"+55\" e nem do \"9\". Deve ter exatos 10 caracteres."
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Casa com portão cinza",
-                                        "description": "É a descrição da casa, ex: \"Prédio, N° 222\", deve ter no máximo 100 caracteres"
-                                    },
-                                    "street": {
-                                        "type": "string",
-                                        "example": "Vila Belarmino",
-                                        "description": "Nome da rua, deve ter no máximo 100 caracteres"
-                                    },
-                                    "number": {
-                                        "type": "string",
-                                        "example": "222222",
-                                        "description": "Número da casa, deve ter no máximo 20 caracteres"
-                                    },
-                                    "neighborhood": {
-                                        "type": "string",
-                                        "example": "Torre",
-                                        "description": "Bairro, deve ter no máximo 100 caracteres"
-                                    },
-                                    "zipCode": {
-                                        "type": "string",
-                                        "example": "58040-497",
-                                        "description": "CEP, deve ter no máximo 9 caracteres"
-                                    },
-                                    "city": {
-                                        "type": "string",
-                                        "example": "João Pessoa",
-                                        "description": "Cidade, deve ter no máximo 100 caracteres"
-                                    },
-                                    "state": {
-                                        "type": "string",
-                                        "example": "PB",
-                                        "description": "Estado, deve ter exatos 2 caracteres"
-                                    },
-                                    "complement": {
-                                        "type": "string",
-                                        "example": "Entrega das 14h até 18h",
-                                        "description": "Complemento, deve ter no máximo 100 caracteres"
                                     }
                                 },
                                 "required": ["name", "phone"]
@@ -1302,6 +1262,98 @@
                                         "value": {
                                             "redirect": null,
                                             "error": "Seu número de telefone deve ter 10 caracteres",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuario/endereco": {
+            "post": {
+                "summary": "Rota para adicionar endereço",
+                "tags": ["Usuário"],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Casa com portão cinza",
+                                        "description": "É a descrição da casa, ex: \"Prédio, N° 222\", deve ter no máximo 100 caracteres"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "example": "Vila Belarmino",
+                                        "description": "Nome da rua, deve ter no máximo 100 caracteres"
+                                    },
+                                    "number": {
+                                        "type": "string",
+                                        "example": "222222",
+                                        "description": "Número da casa, deve ter no máximo 20 caracteres"
+                                    },
+                                    "neighborhood": {
+                                        "type": "string",
+                                        "example": "Torre",
+                                        "description": "Bairro, deve ter no máximo 100 caracteres"
+                                    },
+                                    "zipCode": {
+                                        "type": "string",
+                                        "example": "58040-497",
+                                        "description": "CEP, deve ter no máximo 9 caracteres"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "João Pessoa",
+                                        "description": "Cidade, deve ter no máximo 100 caracteres"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "PB",
+                                        "description": "Estado, deve ter exatos 2 caracteres"
+                                    },
+                                    "complement": {
+                                        "type": "string",
+                                        "example": "Entrega das 14h até 18h",
+                                        "description": "Complemento, deve ter no máximo 100 caracteres"
+                                    }
+                                },
+                                "required": ["description", "street", "number", "neighborhood", "zipCode", "city", "state"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": "Informações atualizada",
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 1":{
+                                        "value": {
+                                            "redirect": "/instalacao/config",
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 2":{
+                                        "value": {
+                                            "redirect": "/instalacao/admin",
+                                            "error": null,
                                             "ok": null,
                                             "data": null
                                         }
@@ -1385,10 +1437,130 @@
                 }
             }
         },
-        "/usuario/endereco": {
+        "/usuario/endereco/{hash}": {
+            "put": {
+                "summary": "Rota para atualizar as informações do endereço",
+                "tags": ["Usuário"],
+                "parameters":[
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "É o ID do endereço que será alterado",
+                        "required": "true",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Casa com portão cinza",
+                                        "description": "É a descrição da casa, ex: \"Prédio, N° 222\", deve ter no máximo 100 caracteres"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "example": "Vila Belarmino",
+                                        "description": "Nome da rua, deve ter no máximo 100 caracteres"
+                                    },
+                                    "number": {
+                                        "type": "string",
+                                        "example": "222222",
+                                        "description": "Número da casa, deve ter no máximo 20 caracteres"
+                                    },
+                                    "neighborhood": {
+                                        "type": "string",
+                                        "example": "Torre",
+                                        "description": "Bairro, deve ter no máximo 100 caracteres"
+                                    },
+                                    "zipCode": {
+                                        "type": "string",
+                                        "example": "58040-497",
+                                        "description": "CEP, deve ter no máximo 9 caracteres"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "João Pessoa",
+                                        "description": "Cidade, deve ter no máximo 100 caracteres"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "PB",
+                                        "description": "Estado, deve ter exatos 2 caracteres"
+                                    },
+                                    "complement": {
+                                        "type": "string",
+                                        "example": "Entrega das 14h até 18h",
+                                        "description": "Complemento, deve ter no máximo 100 caracteres"
+                                    }
+                                },
+                                "required": ["description", "street", "number", "neighborhood", "zipCode", "city", "state"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": "Endereço atualizado",
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 1":{
+                                        "value": {
+                                            "redirect": "/instalacao/config",
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Pulou etapa da instalação 2":{
+                                        "value": {
+                                            "redirect": "/instalacao/admin",
+                                            "error": null,
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Não é possível deletar o endereço": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Não foi possível atualizar o endereço",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete" : {
                 "summary": "Rota para deletar o endereço cadastrado pelo usuário",
                 "tags": ["Usuário"],
+                "parameters":[
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "É o ID do endereço que será alterado",
+                        "required": "true",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -1421,7 +1593,15 @@
                                     "Não é possível deletar o endereço": {
                                         "value": {
                                             "redirect": null,
-                                            "error": "Você não possui endereço cadastrado",
+                                            "error": "Não foi possível deletar o endereço",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Tentando deletar o endereço com ID de outra pessoa": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Endereço não encontrado",
                                             "ok": null,
                                             "data": null
                                         }

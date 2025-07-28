@@ -138,8 +138,6 @@ export default class DatabaseManager{
     }
 
     static async logOut(token: string){
-        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
         const user = await prismaClient.loginToken.delete({
             where: { token }
         })
@@ -148,8 +146,6 @@ export default class DatabaseManager{
     }
 
     static async validateLoginToken(token: string){
-        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
         return await prismaClient.loginToken.findUnique({
             where: { token },
             select: { token: true, tokenExpirationDate: true, userId: true, user: { select: { role: true } } }
@@ -164,8 +160,6 @@ export default class DatabaseManager{
     }
     
     static async consultByLoginToken(token: string){
-        // TESTARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
         let user = await prismaClient.loginToken.findUnique({
             where: { token },
             select: { user: { select: { name: true, email: true, phone: true, role: true } } }
@@ -174,12 +168,12 @@ export default class DatabaseManager{
         return user;
     }
 
-    static async checkExistingAddress(userId: string){
+    static async checkExistingAddress(addressId: string){
         const count = await prismaClient.address.count({
-            where: { usersId: userId }
+            where: { id: addressId }
         });
 
-        return (count == 0) ? false : true;
+        return count;
     }
 
     static async listInformationUser(userId: string){
@@ -198,9 +192,9 @@ export default class DatabaseManager{
 
     static async listInformationAddress(userId: string){
 
-        const userAddress = await prismaClient.address.findUnique({
+        const userAddress = await prismaClient.address.findMany({
             where: { usersId: userId },
-            select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
+            select: { id: true, description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
         });
 
         return userAddress;
@@ -215,36 +209,67 @@ export default class DatabaseManager{
         return true;
     }
 
-    static async updateUserAddressInformation(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
-        
-
-        const countAddress = await prismaClient.address.count({
+    static async consultAddressQuantity(userId: string){
+        const addressCount = await prismaClient.address.count({
             where: { usersId: userId }
         });
 
-        if(countAddress == 0){
-            await prismaClient.address.create({
-                data: { usersId: userId, description, street, number, neighborhood, zipCode, city, state, complement },
-                select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
-            });
-            return true;
-        }
-        else if(countAddress > 0){
+        return addressCount;
+    }
+
+    static async createAddress(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+        await prismaClient.address.create({
+            data: { usersId: userId, description, street, number, neighborhood, zipCode, city, state, complement }
+        });
+
+        return true;
+    }
+
+    static async updateAddress(userId: string, addressId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+        try{
             await prismaClient.address.update({
-                where: { usersId: userId },
                 data: { description, street, number, neighborhood, zipCode, city, state, complement },
-                select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
+                where: { usersId: userId, id: addressId }
             });
+    
             return true;
         }
-        else{
-            return false;
+        catch(error){
+            return null;
         }
     }
 
-    static async deleteUserAddress(userId: string){
+    // static async updateUserAddressInformation(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+        
+
+    //     const countAddress = await prismaClient.address.count({
+    //         where: { usersId: userId }
+    //     });
+
+    //     if(countAddress == 0){
+    //         await prismaClient.address.create({
+    //             data: { usersId: userId, description, street, number, neighborhood, zipCode, city, state, complement },
+    //             select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
+    //         });
+    //         return true;
+    //     }
+    //     else if(countAddress > 0){
+    //         await prismaClient.address.update({
+    //             where: { usersId: userId },
+    //             data: { description, street, number, neighborhood, zipCode, city, state, complement },
+    //             select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
+    //         });
+    //         return true;
+    //     }
+    //     else{
+    //         return false;
+    //     }
+    // }
+
+    static async deleteUserAddress(userId: string, addressId: string){
         const status = await prismaClient.address.delete({
-            where: { usersId: userId }
+            where: { id: addressId, usersId: userId },
+            select: { id: true }
         });
 
         return status;
