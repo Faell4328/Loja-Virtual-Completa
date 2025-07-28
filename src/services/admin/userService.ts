@@ -24,8 +24,6 @@ function adjustStatusPattern(status: string){
             return 'Pendente validação email'
         case 'OK':
             return 'Ok'
-        case 'DEVENDO':
-            return 'Devedor'
         default: 
             return 'Bloqueado'
     }
