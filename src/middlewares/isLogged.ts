@@ -9,21 +9,28 @@ export default async function isLogged(req: Request, res: Response, next: NextFu
         return;
     }
 
-    let loginToken = await DatabaseManager.validateLoginToken(req.cookies['token']);
+    let returnDbTokenUser = await DatabaseManager.validateLoginToken(req.cookies['token']);
 
-    if(!loginToken){
+    if(returnDbTokenUser == null){
         serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
         return;
     }
 
-    const { tokenExpirationDate } = loginToken;
+    const { tokenExpirationDate, userId } = returnDbTokenUser;
+    const { status } = returnDbTokenUser.user;
+
+    if(status == "BLOCKED"){
+        DatabaseManager.logOut(req.cookies['token']);
+        serverSendingPattern(res, null, 'Sua conta está bloqueada. Entre em contato com o suporte para mais informações', null, null)
+        return;
+    }
 
     if(tokenExpirationDate === null || tokenExpirationDate < new Date()){
-        serverSendingPattern(res, '/login', 'Faça login antes de acessar', null, null)
+        serverSendingPattern(res, '/login', 'Sua sessão expirou. Faça login novamente para continuar', null, null)
         return;
     }
 
-    req.userId = loginToken.userId;
+    req.userId = userId;
 
     next();
     return;

@@ -723,6 +723,14 @@
                                             "data": null
                                         }
                                     },
+                                    "Conta bloqueada": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Sua conta está bloqueada. Entre em contato com o suporte para mais informações",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
                                     "Pulou etapa da instalação 1":{
                                         "value": {
                                             "redirect": "/instalacao/config",
@@ -1781,6 +1789,100 @@
                                         "value": {
                                             "redirect": null,
                                             "error": "Usuário não encontrado",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/usuario/status/{id}": {
+            "put": {
+                "summary": "Rota para atualizar o status do usuário",
+                "description": "Não é permitido alterar o status de usuários ADMIN",
+                "tags": ["Admin"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "É o ID do usuário que terá o status alterado",
+                        "required": "true",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "BLOCKED",
+                                        "description": "O novo status do usuário, sendo \"OK\" ou \"BLOCKED\""
+                                    }
+                                },
+                                "required": ["status"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mensagem de sucesso",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": "Status do usuário atualizado",
+                                            "data": null
+                                        }
+                                    },
+                                    "Problema ao atualizar status": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Erro ao atualizar o status do usuário",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Tentando atualizar status de um usuário administrador": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Não é possível alterar o status de um admin",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Não adicionando o ID no path": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Não foi enviado o ID do usuário",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Campo de status vázio": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Foi enviado sem status",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Status inválido": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Status inválido",
                                             "ok": null,
                                             "data": null
                                         }

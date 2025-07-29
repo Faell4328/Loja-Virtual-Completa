@@ -64,3 +64,25 @@ export async function listSpecificUserService(userId: string){
 
     return returnServicePattern(null, false, true, { id, name, email, phone, role: ajustedRole, status: ajustedStatus });
 }
+
+export async function changeStatusUserService(userId: string, status: "OK" | "BLOCKED"){
+    const returnDbInformationUser = await DatabaseManager.listInformationUser(userId);
+    
+    if(returnDbInformationUser == null){
+        return returnServicePattern('/admin/usuarios', true, false, 'Usuário não encontrado');
+    }
+    
+    let { role } = returnDbInformationUser;
+
+    if(role == "ADMIN"){
+        return returnServicePattern(null, true, false, 'Não é possível alterar o status de um admin');
+    }
+
+    const returnDbStatus = await DatabaseManager.changeStatusUser(userId, status);
+
+    if(returnDbStatus == null){
+        return returnServicePattern(null, true, false, 'Erro ao atualizar o status do usuário');
+    }
+    
+    return returnServicePattern(null, false, true, 'Status do usário atualizado');
+}

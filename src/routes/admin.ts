@@ -2,15 +2,20 @@ import { Router, Request, Response } from 'express';
 
 import isAdmin from '../middlewares/isAdmin';
 
+import uploadConfig from '../config/multer';
 import whatsappController from '../controllers/admin/whatsappController';
 import generationWhatsappQrcodeService from '../services/whatsapp/generationWhatsappQrcodeService';
 import { regularlCondicionalRoutes } from '../middlewares/condicionalRoutes';
-import { listSpecificUserController, listUsersController } from '../controllers/admin/userController';
+import { changeStatusUserController, listSpecificUserController, listUsersController } from '../controllers/admin/userController';
+import { validateStatus } from '../middlewares/validatorInput';
+import multer from 'multer';
 
 const adminRoute = Router();
 
 let whatsappReady = false;
 let qrcode = '';
+
+const upload = multer(uploadConfig.upload());
 
 export function setQrcode(data: string){
     qrcode = data;
@@ -27,7 +32,12 @@ adminRoute.get('/admin/usuarios', regularlCondicionalRoutes, isAdmin, (req: Requ
 
 adminRoute.get('/admin/usuario/:id', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
     listSpecificUserController(req, res);
-    return
+    return;
+});
+
+adminRoute.put('/admin/usuario/status/:id', regularlCondicionalRoutes, isAdmin, upload.none(), validateStatus, (req: Request, res: Response) => {
+    changeStatusUserController(req, res);
+    return;
 });
 
 adminRoute.get('/admin/whatsapp', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
@@ -35,7 +45,7 @@ adminRoute.get('/admin/whatsapp', regularlCondicionalRoutes, isAdmin, (req: Requ
     return
 });
 
-adminRoute.get('/admin/whatsapp/qr',regularlCondicionalRoutes, (req: Request, res: Response) => {
+adminRoute.get('/admin/whatsapp/qr', regularlCondicionalRoutes, isAdmin, (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');

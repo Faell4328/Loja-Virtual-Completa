@@ -92,6 +92,12 @@ export const validateInformationUser = [
         .isLength({ min: 10, max: 10 }).withMessage('Seu número deve ter 10 caracteres'),
 ];
 
+export const validateStatus = [
+    body('status')
+        .notEmpty().withMessage('Foi enviado sem status')
+        .isIn(["OK", "BLOCKED"]).withMessage("Status inválido")
+]
+
 export const validatesInformationAddress = [
     body('description')
         .notEmpty().withMessage('Falta a descrição')

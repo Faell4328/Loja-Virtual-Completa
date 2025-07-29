@@ -9,17 +9,24 @@ export default async function isNotLogged(req: Request, res: Response, next: Nex
         return;
     }
 
-    let loginToken = await DatabaseManager.validateLoginToken(req.cookies['token']);
+    let returnDbTokenUser = await DatabaseManager.validateLoginToken(req.cookies['token']);
 
-    if(!loginToken){
+    if(returnDbTokenUser == null){
         next();
         return;
     }
 
-    const { tokenExpirationDate } = loginToken;
+    const { tokenExpirationDate } = returnDbTokenUser;
+    const { status } = returnDbTokenUser.user;
 
     if(tokenExpirationDate === null || tokenExpirationDate < new Date()){
         next();
+        return;
+    }
+
+    if(status == "BLOCKED"){
+        DatabaseManager.logOut(req.cookies['token']);
+        serverSendingPattern(res, null, 'Sua conta está bloqueada. Entre em contato com o suporte para mais informações', null, null)
         return;
     }
 

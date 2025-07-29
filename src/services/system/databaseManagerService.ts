@@ -146,16 +146,20 @@ export default class DatabaseManager{
     }
 
     static async validateLoginToken(token: string){
-        return await prismaClient.loginToken.findUnique({
+        const user = await prismaClient.loginToken.findUnique({
             where: { token },
-            select: { token: true, tokenExpirationDate: true, userId: true, user: { select: { role: true } } }
+            select: { token: true, tokenExpirationDate: true, userId: true, user: { select: { role: true, status: true } } }
         });
+
+        return user;
     }
 
     static async consultByEmail(email: string){
         let user = await prismaClient.user.findUnique({
-            where: { email }
+            where: { email },
+            select: { name: true, emailConfirmationToken: true, password: true, phone: true, role: true, status: true }
         });
+
         return user;
     }
     
@@ -176,18 +180,29 @@ export default class DatabaseManager{
         return count;
     }
 
-    static async listInformationUser(userId: string){
+    static async listUsers(){
+        const users = await prismaClient.user.findMany({
+            select: { id: true, name: true, email: true, phone: true, role: true, status: true }
+        });
+        return users;
+    }
 
+    static async listInformationUser(userId: string){
         const userInformation = await prismaClient.user.findUnique({
             where: { id: userId },
             select: { id: true, name: true, email: true, phone: true, role: true, status: true }
         });
 
-        if(userInformation == null){
-            return null;
-        }
-
         return userInformation;
+    }
+
+    static async changeStatusUser(userId: string, status: "OK" | "BLOCKED"){
+        const user = await prismaClient.user.update({
+            data: { status: status },
+            where: { id: userId }
+        });
+
+        return user;
     }
 
     static async listInformationAddress(userId: string){
@@ -246,13 +261,6 @@ export default class DatabaseManager{
         });
 
         return status;
-    }
-
-    static async listUsers(){
-        const users = await prismaClient.user.findMany({
-            select: { id: true, name: true, email: true, phone: true, role: true, status: true }
-        });
-        return users;
     }
 
     static async listAllCategories(){
