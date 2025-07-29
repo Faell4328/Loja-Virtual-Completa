@@ -1613,6 +1613,84 @@
                 }
             }
         },
+        "/usuario/senha": {
+            "patch": {
+                "summary": "Rota para alterar a senha",
+                "tags": ["Usuário"],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "password1": {
+                                        "type": "string",
+                                        "example": "deusefiel",
+                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                    },
+                                    "password2": {
+                                        "type": "string",
+                                        "example": "deusefiel",
+                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                    }
+                                },
+                                "required": ["password1", "password2"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "Sucesso": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": null,
+                                            "ok": "Senha alterada",
+                                            "data": null
+                                        }
+                                    },
+                                    "Erro ao alterar a senha": {
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Erro ao alterar a senha",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Falta a senha":{
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "Falta a senha",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Senha com menos de 8 caracteres":{
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "A senha deve ter no mínimo 8 caracteres",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    },
+                                    "Senha com mais de 30 caracteres":{
+                                        "value": {
+                                            "redirect": null,
+                                            "error": "A senha deve ter no máximo 30 caracteres",
+                                            "ok": null,
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/usuarios": {
             "get": {
                 "summary": "Rota para lsitar todos os usuários",

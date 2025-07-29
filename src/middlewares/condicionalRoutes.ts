@@ -16,7 +16,7 @@ export function regularlCondicionalRoutes(req: Request, res: Response, next: Nex
     next();
 }
 
-export function conditionalInstalationRoutes(req: Request, res: Response, next: NextFunction){
+export function instalationConditionalRoutes(req: Request, res: Response, next: NextFunction){
     if(statusSystem >= 2){
         serverSendingPattern(res, '/', "Essa etapa já foi feita", null, null);
         return;

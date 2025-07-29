@@ -3,7 +3,7 @@ import multer from 'multer';
 
 import uploadConfig from '../config/multer';
 import isNotLogged from '../middlewares/isNotLogged';
-import { validateEmail,validatePassword } from '../middlewares/validatorInput';
+import { validateEmail, validatePassword } from '../middlewares/validatorInput';
 import { regularlCondicionalRoutes } from '../middlewares/condicionalRoutes';
 import { checkTokenPasswordRecoveryController, passwordRecoveryConfirmationController, passwordRecoveryController } from '../controllers/email/passwordRecoveryController';
 import { confirmationLimit, emailLimit } from '../security/requestLimit';

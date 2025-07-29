@@ -106,7 +106,7 @@ export default class DatabaseManager{
     static async passwordRecoveryConfirmed(userId: string, newHashPassword: string){
         await prismaClient.user.update({
             where: { id: userId,},
-            data: { password: newHashPassword, resetPasswordToken:null, resetPasswordTokenExpirationDate:null }
+            data: { password: newHashPassword, resetPasswordToken: null, resetPasswordTokenExpirationDate: null }
         });
         return true;
     }
@@ -238,33 +238,6 @@ export default class DatabaseManager{
             return null;
         }
     }
-
-    // static async updateUserAddressInformation(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
-        
-
-    //     const countAddress = await prismaClient.address.count({
-    //         where: { usersId: userId }
-    //     });
-
-    //     if(countAddress == 0){
-    //         await prismaClient.address.create({
-    //             data: { usersId: userId, description, street, number, neighborhood, zipCode, city, state, complement },
-    //             select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
-    //         });
-    //         return true;
-    //     }
-    //     else if(countAddress > 0){
-    //         await prismaClient.address.update({
-    //             where: { usersId: userId },
-    //             data: { description, street, number, neighborhood, zipCode, city, state, complement },
-    //             select: { description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
-    //         });
-    //         return true;
-    //     }
-    //     else{
-    //         return false;
-    //     }
-    // }
 
     static async deleteUserAddress(userId: string, addressId: string){
         const status = await prismaClient.address.delete({

@@ -35,7 +35,7 @@ adminRoute.get('/admin/whatsapp', regularlCondicionalRoutes, isAdmin, (req: Requ
     return
 });
 
-adminRoute.get('/admin/whatsapp/qr', (req: Request, res: Response) => {
+adminRoute.get('/admin/whatsapp/qr',regularlCondicionalRoutes, (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');

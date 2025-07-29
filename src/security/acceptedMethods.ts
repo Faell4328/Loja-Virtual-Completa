@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-const methods = [ 'GET', 'POST', 'PUT', 'DELETE' ];
+const methods = [ 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' ];
 
 export default function acceptedMethod(req: Request, res: Response, next: NextFunction){
     if(!methods.includes(req.method)){
