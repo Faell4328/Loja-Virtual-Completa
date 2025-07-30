@@ -15,12 +15,12 @@ const loginAndRegistrationRoute = Router();
 
 const upload = multer(uploadConfig.upload());
 
-loginAndRegistrationRoute.post('/login', regularlCondicionalRoutes, isNotLogged, loginLimit, upload.none(), validateLogin, (req: Request, res: Response) => {
+loginAndRegistrationRoute.post('/login', regularlCondicionalRoutes, isNotLogged, loginLimit, validateLogin, (req: Request, res: Response) => {
     loginController(req, res);
     return;
 });
 
-loginAndRegistrationRoute.post('/cadastrar', regularlCondicionalRoutes, isNotLogged, upload.none(), validateRegister, (req: Request, res: Response) => {
+loginAndRegistrationRoute.post('/cadastrar', regularlCondicionalRoutes, isNotLogged, validateRegister, (req: Request, res: Response) => {
     registrerUserController(req, res);
     return;
 });

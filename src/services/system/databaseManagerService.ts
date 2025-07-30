@@ -209,7 +209,7 @@ export default class DatabaseManager{
 
         const userAddress = await prismaClient.address.findMany({
             where: { usersId: userId },
-            select: { id: true, description: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
+            select: { id: true, name: true, street: true, number: true, neighborhood: true, zipCode: true, city: true, state: true, complement: true }
         });
 
         return userAddress;
@@ -232,18 +232,18 @@ export default class DatabaseManager{
         return addressCount;
     }
 
-    static async createAddress(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+    static async createAddress(userId: string, name: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
         await prismaClient.address.create({
-            data: { usersId: userId, description, street, number, neighborhood, zipCode, city, state, complement }
+            data: { usersId: userId, name, street, number, neighborhood, zipCode, city, state, complement }
         });
 
         return true;
     }
 
-    static async updateAddress(userId: string, addressId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+    static async updateAddress(userId: string, addressId: string, name: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
         try{
             await prismaClient.address.update({
-                data: { description, street, number, neighborhood, zipCode, city, state, complement },
+                data: { name, street, number, neighborhood, zipCode, city, state, complement },
                 where: { usersId: userId, id: addressId }
             });
     

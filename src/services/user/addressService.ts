@@ -1,14 +1,14 @@
 import returnServicePattern from "../returnServicePattern";
 import DatabaseManager from "../system/databaseManagerService";
 
-export async function createAddressService(userId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+export async function createAddressService(userId: string, name: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
     const addressQuantity = await DatabaseManager.consultAddressQuantity(userId);
 
     if(addressQuantity >= 10){
         return returnServicePattern(null, true, false, 'Limite de endereços atingido. Remova os que não usa mais para continuar.');
     }
 
-    const returnDbStatusUpdateUserInformation = await DatabaseManager.createAddress(userId, description, street, number, neighborhood, zipCode, state, city, complement);
+    const returnDbStatusUpdateUserInformation = await DatabaseManager.createAddress(userId, name, street, number, neighborhood, zipCode, state, city, complement);
 
     if(returnDbStatusUpdateUserInformation == true){
         return returnServicePattern(null, false, true, 'Endereço cadastrado');
@@ -18,8 +18,8 @@ export async function createAddressService(userId: string, description: string, 
     }
 }
 
-export async function updateAddressService(userId: string, addressId: string, description: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
-    const returnDbStatusUpdateUserInformation = await DatabaseManager.updateAddress(userId, addressId, description, street, number, neighborhood, zipCode, state, city, complement);
+export async function updateAddressService(userId: string, addressId: string, name: string, street: string, number: string, neighborhood: string, zipCode: string, city: string, state: string, complement: string){
+    const returnDbStatusUpdateUserInformation = await DatabaseManager.updateAddress(userId, addressId, name, street, number, neighborhood, zipCode, state, city, complement);
 
     if(returnDbStatusUpdateUserInformation == true){
         return returnServicePattern(null, false, true, 'Endereço atualizado');

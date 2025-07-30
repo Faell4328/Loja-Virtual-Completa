@@ -61,7 +61,7 @@ model LoginToken {
 model Address {
   id           String    @id @default(uuid())
   usersId      String
-  description  String    @db.VarChar(100)
+  name         String    @db.VarChar(50)
   street       String    @db.VarChar(100)
   number       String    @db.VarChar(20)
   neighborhood String    @db.VarChar(100)

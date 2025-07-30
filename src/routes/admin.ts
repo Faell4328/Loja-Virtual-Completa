@@ -2,20 +2,16 @@ import { Router, Request, Response } from 'express';
 
 import isAdmin from '../middlewares/isAdmin';
 
-import uploadConfig from '../config/multer';
 import whatsappController from '../controllers/admin/whatsappController';
 import generationWhatsappQrcodeService from '../services/whatsapp/generationWhatsappQrcodeService';
 import { regularlCondicionalRoutes } from '../middlewares/condicionalRoutes';
 import { changeStatusUserController, listSpecificUserController, listUsersController } from '../controllers/admin/userController';
 import { validateStatus } from '../middlewares/validatorInput';
-import multer from 'multer';
 
 const adminRoute = Router();
 
 let whatsappReady = false;
 let qrcode = '';
-
-const upload = multer(uploadConfig.upload());
 
 export function setQrcode(data: string){
     qrcode = data;
@@ -35,7 +31,7 @@ adminRoute.get('/admin/usuario/:id', regularlCondicionalRoutes, isAdmin, (req: R
     return;
 });
 
-adminRoute.put('/admin/usuario/status/:id', regularlCondicionalRoutes, isAdmin, upload.none(), validateStatus, (req: Request, res: Response) => {
+adminRoute.put('/admin/usuario/status/:id', regularlCondicionalRoutes, isAdmin, validateStatus, (req: Request, res: Response) => {
     changeStatusUserController(req, res);
     return;
 });

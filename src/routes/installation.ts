@@ -10,7 +10,7 @@ import { instalationConditionalRoutes } from '../middlewares/condicionalRoutes';
 const instalationRoute = Router();
 const upload = multer(uploadConfig.upload(true));
 
-instalationRoute.post('/instalacao/admin', instalationConditionalRoutes, upload.none(), validateRegister, (req: Request, res: Response) => {
+instalationRoute.post('/instalacao/admin', instalationConditionalRoutes, validateRegister, (req: Request, res: Response) => {
     createUserAdminController(req, res);
     return
 })

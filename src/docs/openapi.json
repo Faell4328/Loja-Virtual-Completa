@@ -123,33 +123,30 @@
                 "summary": "Rota para criar o usuário admin (é a segunda etapa de instalação)",
                 "tags": ["Instalação"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) deve ter no mínimo 2 caracteres e no máximo 100 caracteres<br/><br/>No campo \"phone\" (obrigatório) tem que ser um número válido e seguir o seguinte formato: \"31xxxxxxxx\", não é necessário do \"+55\" e nem do \"9\" no início, tendo exatamente 10 caracteres.<br/><br/>No campo \"email\" (obrigatório) deve ter ser um email válido e ter no mínimo 2 caracteres e no máximo 100 caracteres<br/><br/>NO campo \"password\" (obrigatório) deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Marize",
-                                        "description": "Deve ter no mínimo 2 caracteres e no máximo 100 caracteres"
+                                        "example": "Marize"
                                     },
                                     "phone": {
                                         "type": "string",
-                                        "example": "20028922",
-                                        "description": "Tem que ser um número valido e seguir o seguinte formato: \"31xxxxxxxx\", não precisa do \"+55\" e nem do \"9\". Deve ter exatos 10 caracteres."
+                                        "example": "3180750566"
                                     },
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
-                                        "description": "Deve ser um email válido e ter no mínimo 2 caracteres e no máximo 100 caracteres"
+                                        "format": "email"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "deusefiel",
-                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                        "example": "deusefiel"
                                     }
-                                },
-                                "required": ["name", "phone", "email", "password"]
+                                }
                             }
                         }
                     }
@@ -331,20 +328,20 @@
         "/confirmacao": {
             "post": {
                 "summary": "Rota para solicitar o reenvio via email, do link de verificação de email",
-                "tags": ["Ativação de Conta"],
+                "tags": ["Confirmação de Email"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"email\" (obrigatório) deve ser um email válido, ter no mínimo 2 caracteres e no máximo 100 caracteres, já ter sido cadastrado e sem ter confirmado o email ",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
-                                        "description": "Deve ser um email válido, ter no mínimo 2 caracteres e no máximo 100 caracteres, já ter sido cadastrado e sem verificação de email"
+                                        "format": "email"
                                     }
-                                },
-                                "required": ["email"]
+                                }
                             }
                         }
                     }
@@ -436,7 +433,7 @@
         "/confirmacao/{hash}":{
             "put": {
                 "summary": "Rota para validar email e ativar a conta",
-                "tags": ["Ativação de Conta"],
+                "tags": ["Confirmação de Email"],
                 "parameters": [
                     {
                         "name": "hash",
@@ -512,9 +509,11 @@
             "post": {
                 "summary": "Rota para realizar o cadastro de usuário",
                 "tags": ["Cadastro, Login e LogOut"],
-                "requestBody": {
+                "requestBody": {    
+                    "required": true,
+                    "description": "No campo \"name\" deve ter no mínimo 2 caracteres e no máximo 100 caracteres<br/><br/>No campo \"phone\" tem que ser um número válido e seguir o seguinte formato: \"31xxxxxxxx\", não é necessário do \"+55\" e nem do \"9\" no início, tendo exatamente 10 caracteres.<br/><br/>No campo \"email\" deve ter ser um email válido e ter no mínimo 2 caracteres e no máximo 100 caracteres<br/><br/>NO campo \"password\" deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -525,7 +524,7 @@
                                     },
                                     "phone": {
                                         "type": "string",
-                                        "example": "20028922",
+                                        "example": "3180750566",
                                         "description": "Tem que ser um número valido e seguir o seguinte formato: \"31xxxxxxxx\", não precisa do \"+55\" e nem do \"9\". Deve ter exatos 10 caracteres."
                                     },
                                     "email": {
@@ -681,23 +680,22 @@
                 "summary": "Rota para realizar o login (o token no cookie tem validade de 20 dias, depois é necessário fazer login novamente)",
                 "tags": ["Cadastro, Login e LogOut"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"email\" (obrigatório) deve ser um email válido, ter no mínimo 2 caracteres e no máximo 100 caracteres, já ter sido cadastrado e já ativado o email<br /><br />No campo \"password\" (obrigatório) deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
-                                        "description": "Deve ser um email válido, ter no mínimo 2 caracteres e no máximo 100 caracteres, já ter sido cadastrado e já ativado a conta"
+                                        "format": "email"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "deusefiel",
-                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                        "example": "deusefiel"
                                     }
-                                },
-                                "required": ["email", "password"]
+                                }
                             }
                         }
                     }
@@ -1125,7 +1123,7 @@
                                             "ok": null,
                                             "data": {
                                                 "name": "Marize",
-                                                "phone": "20028922"
+                                                "phone": "3180750566"
                                             }
                                         }
                                     },
@@ -1136,7 +1134,7 @@
                                             "ok": null,
                                             "data": {
                                                 "name": "Marize",
-                                                "phone": "20028922",
+                                                "phone": "3180750566",
                                                 "address": {
                                                     "description": "Descrição da casa/apartamento, ponto de referência e etc",
                                                     "street": "Rua",
@@ -1184,23 +1182,22 @@
                 "description": "Atualizar informações como nome e telefone",
                 "tags": ["Usuário"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) deve ter no mínimo 2 caracteres e no máximo 100 caracteres<br/><br/>No campo \"phone\" (obrigatório) Tem que ser um número valido e seguir o seguinte formato: \"31xxxxxxxx\", não precisa do \"+55\" e nem do \"9\", deve ter exatos 10 caracteres",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Zeze",
-                                        "description": "Deve ter no mínimo 2 caracteres e no máximo 100 caracteres"
+                                        "example": "Zeze"
                                     },
                                     "phone": {
                                         "type": "string",
-                                        "example": "20028922",
-                                        "description": "Tem que ser um número valido e seguir o seguinte formato: \"31xxxxxxxx\", não precisa do \"+55\" e nem do \"9\". Deve ter exatos 10 caracteres."
+                                        "example": "3180750566"
                                     }
-                                },
-                                "required": ["name", "phone"]
+                                }
                             }
                         }
                     }
@@ -1286,53 +1283,46 @@
                 "summary": "Rota para adicionar endereço",
                 "tags": ["Usuário"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) é para identificar o endereço, ex: \"Casa\", deve ter no máximo 50 caracteres <br/><br/>No campo \"street\" (obrigatório) é o nome da rua, deve ter no máximo 100 caracteres <br/><br/>No campo \"number\" (obrigatório) é o número da casa/apartamento, deve ter no máximo 20 caracteres <br/><br/>No campo \"neighborhood\" (obrigatório) é o bairro, deve ter no máximo 100 caracteres <br/><br/>No campo \"zipCode\" (obrigatório) é o CEP, deve ter no máximo 9 caracteres <br/><br/>No campo \"city\" (obrigatório) é a cidade, deve ter no máximo 100 caracteres <br/><br/>No campo \"state\" (obrigatório) é o estado, deve ter exatos 2 caracteres <br/><br/>No campo \"complement\" (opcional) é o complemento, ex: \"Número do apartamento N°221\", deve ter no máximo 100 caracteres <br/><br/>",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "description": {
+                                    "name": {
                                         "type": "string",
-                                        "example": "Casa com portão cinza",
-                                        "description": "É a descrição da casa, ex: \"Prédio, N° 222\", deve ter no máximo 100 caracteres"
+                                        "example": "Casa 1"
                                     },
                                     "street": {
                                         "type": "string",
-                                        "example": "Vila Belarmino",
-                                        "description": "Nome da rua, deve ter no máximo 100 caracteres"
+                                        "example": "Vila Belarmino"
                                     },
                                     "number": {
                                         "type": "string",
-                                        "example": "222222",
-                                        "description": "Número da casa, deve ter no máximo 20 caracteres"
+                                        "example": "222222"
                                     },
                                     "neighborhood": {
                                         "type": "string",
-                                        "example": "Torre",
-                                        "description": "Bairro, deve ter no máximo 100 caracteres"
+                                        "example": "Torre"
                                     },
                                     "zipCode": {
                                         "type": "string",
-                                        "example": "58040-497",
-                                        "description": "CEP, deve ter no máximo 9 caracteres"
+                                        "example": "58040-497"
                                     },
                                     "city": {
                                         "type": "string",
-                                        "example": "João Pessoa",
-                                        "description": "Cidade, deve ter no máximo 100 caracteres"
+                                        "example": "João Pessoa"
                                     },
                                     "state": {
                                         "type": "string",
-                                        "example": "PB",
-                                        "description": "Estado, deve ter exatos 2 caracteres"
+                                        "example": "PB"
                                     },
                                     "complement": {
                                         "type": "string",
-                                        "example": "Entrega das 14h até 18h",
-                                        "description": "Complemento, deve ter no máximo 100 caracteres"
+                                        "example": "Entrega das 14h até 18h"
                                     }
-                                },
-                                "required": ["description", "street", "number", "neighborhood", "zipCode", "city", "state"]
+                                }
                             }
                         }
                     }
@@ -1461,53 +1451,46 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) é para identificar o endereço, ex: \"Casa\", deve ter no máximo 50 caracteres <br/><br/>No campo \"street\" (obrigatório) é o nome da rua, deve ter no máximo 100 caracteres <br/><br/>No campo \"number\" (obrigatório) é o número da casa/apartamento, deve ter no máximo 20 caracteres <br/><br/>No campo \"neighborhood\" (obrigatório) é o bairro, deve ter no máximo 100 caracteres <br/><br/>No campo \"zipCode\" (obrigatório) é o CEP, deve ter no máximo 9 caracteres <br/><br/>No campo \"city\" (obrigatório) é a cidade, deve ter no máximo 100 caracteres <br/><br/>No campo \"state\" (obrigatório) é o estado, deve ter exatos 2 caracteres <br/><br/>No campo \"complement\" (opcional) é o complemento, ex: \"Número do apartamento N°221\", deve ter no máximo 100 caracteres <br/><br/>",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "description": {
+                                    "name": {
                                         "type": "string",
-                                        "example": "Casa com portão cinza",
-                                        "description": "É a descrição da casa, ex: \"Prédio, N° 222\", deve ter no máximo 100 caracteres"
+                                        "example": "Casa 1"
                                     },
                                     "street": {
                                         "type": "string",
-                                        "example": "Vila Belarmino",
-                                        "description": "Nome da rua, deve ter no máximo 100 caracteres"
+                                        "example": "Vila Belarmino"
                                     },
                                     "number": {
                                         "type": "string",
-                                        "example": "222222",
-                                        "description": "Número da casa, deve ter no máximo 20 caracteres"
+                                        "example": "222222"
                                     },
                                     "neighborhood": {
                                         "type": "string",
-                                        "example": "Torre",
-                                        "description": "Bairro, deve ter no máximo 100 caracteres"
+                                        "example": "Torre"
                                     },
                                     "zipCode": {
                                         "type": "string",
-                                        "example": "58040-497",
-                                        "description": "CEP, deve ter no máximo 9 caracteres"
+                                        "example": "58040-497"
                                     },
                                     "city": {
                                         "type": "string",
-                                        "example": "João Pessoa",
-                                        "description": "Cidade, deve ter no máximo 100 caracteres"
+                                        "example": "João Pessoa"
                                     },
                                     "state": {
                                         "type": "string",
-                                        "example": "PB",
-                                        "description": "Estado, deve ter exatos 2 caracteres"
+                                        "example": "PB"
                                     },
                                     "complement": {
                                         "type": "string",
-                                        "example": "Entrega das 14h até 18h",
-                                        "description": "Complemento, deve ter no máximo 100 caracteres"
+                                        "example": "Entrega das 14h até 18h"
                                     }
-                                },
-                                "required": ["description", "street", "number", "neighborhood", "zipCode", "city", "state"]
+                                }
                             }
                         }
                     }
@@ -1626,23 +1609,22 @@
                 "summary": "Rota para alterar a senha",
                 "tags": ["Usuário"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"password1\" (obrigatório) deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência <br/><br/>No campo \"password2\" (obrigatório) a senha deve ser a mesma senha que no \"password1\"",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "password1": {
                                         "type": "string",
-                                        "example": "deusefiel",
-                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                        "example": "deusefiel"
                                     },
                                     "password2": {
                                         "type": "string",
-                                        "example": "deusefiel",
-                                        "description": "Deve ter no mínimo 8 caracteres e no máximo 30 caracteres, não tendo nenhuma outra exigência"
+                                        "example": "deusefiel"
                                     }
-                                },
-                                "required": ["password1", "password2"]
+                                }
                             }
                         }
                     }
@@ -1719,7 +1701,7 @@
                                                     "id": "xxxx",
                                                     "name": "Marize",
                                                     "email": "user@example.com",
-                                                    "phone": "20028922",
+                                                    "phone": "3180750566",
                                                     "role": "Usuário",
                                                     "status": "ok"
                                                 }
@@ -1771,7 +1753,7 @@
                                                 "id": "xxxx",
                                                 "name": "Marize",
                                                 "email": "user@example.com",
-                                                "phone": "20028922",
+                                                "phone": "3180750566",
                                                 "role": "Usuário",
                                                 "status": "ok",
                                                 "address": {
@@ -1817,18 +1799,18 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"status\" (obrigatório) aceita apenas os valores \"OK\" ou \"BLOCKED\"",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "status": {
                                         "type": "string",
-                                        "example": "BLOCKED",
-                                        "description": "O novo status do usuário, sendo \"OK\" ou \"BLOCKED\""
+                                        "example": "BLOCKED"
                                     }
-                                },
-                                "required": ["status"]
+                                }
                             }
                         }
                     }
@@ -2100,18 +2082,18 @@
                 "summary": "Rota para cadastrar uma categoria",
                 "tags": ["Categoria"],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) é o nome da categória",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Categoria teste",
-                                        "description": "Nome que ficará na categoria"
+                                        "example": "Categoria teste"
                                     }
-                                },
-                                "required": ["name"]
+                                }
                             }
                         }
                     }
@@ -2168,15 +2150,16 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"nome\" é o novo nome da categória",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "exemple": "Outro nome para a categoria",
-                                        "description": "Novo nome para a categoria"
+                                        "exemple": "Outro nome para a categoria"
                                     }
                                 }
                             }
@@ -2497,7 +2480,7 @@
                                     "option": {
                                         "type": "string",
                                         "example": "12W",
-                                        "description": "Vai colocar a opção do produto"
+                                        "description": "Nome da opção que vai aparecer com o produto"
                                     },
                                     "quantity": {
                                         "type": "string",
@@ -2576,54 +2559,34 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"name\" (obrigatório) é o nome do produto <br/><br/>No campo \"originalPrice\" (obrigatório) é o preço do produto <br/><br/>No campo \"promotionPrice\" (obrigatório) é o valor do produto com desconto, se o produto não estiver, o valor deve ser 0 <br/><br/>No campo \"categoryId\" (obrigatório) é o id da categoria que o produto será cadastrado. Todo produto deve ser vinculado a uma categoria <br/><br/>No campo \"description\" (obrigatório) é a descrição do produto",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Produto teste",
-                                        "description": "É o nome do produto"
+                                        "example": "Produto teste"
                                     },
                                     "originalPrice": {
                                         "type": "string",
-                                        "example": 10,
-                                        "description": "É o preço do produto"
+                                        "example": 10
                                     },
                                     "promotionPrice": {
                                         "type": "string",
-                                        "example": 2,
-                                        "description": "É o valor do produto com desconto, caso não esteja será 0 ou null"
+                                        "example": 2
                                     },
                                     "categoryId": {
                                         "type": "string",
-                                        "example": "a2a61112-4415-4b53-820f-29480397c95f",
-                                        "description": "É o id da categoria que o produto será cadastrado. Todo produto deve ser vinculado a uma categoria"
+                                        "example": "a2a61112-4415-4b53-820f-29480397c95f"
                                     },
                                     "description": {
                                         "type": "string",
-                                        "example": "Produto feito com dente de galinha",
-                                        "description": "Vai descrever o produto"
-                                    },
-                                    "option": {
-                                        "type": "string",
-                                        "example": "12W",
-                                        "description": "Vai colocar a opção do produto"
-                                    },
-                                    "quantity": {
-                                        "type": "string",
-                                        "example": 2,
-                                        "description": "Quantidade disponível referente aquela opção"
-                                    },
-                                    "files": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "example": "imagem_produto1.jpg",
-                                        "description": "Imagem do produto"
+                                        "example": "Produto feito com dente de galinha"
                                     }
-                                },
-                                "required": ["name", "originalPrice", "promotionPrice", "categoryId"]
+                                }
                             }
                         }
                     }
@@ -2721,20 +2684,20 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"option\" (obrigatório) deve ser o nome da opção que vai aparecer com o produto<br/><br/>No campo \"quantity\" (obrigatório) deve ter a quantidade disponível referente aquela opção<br/><br/>",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "option": {
                                         "type": "string",
-                                        "example": "G",
-                                        "description": "É a opção que vai aparecer com o produto"
+                                        "example": "G"
                                     },
                                     "quantity": {
                                         "type": "number",
-                                        "example": 3,
-                                        "description": "É a quantidade disponível na opção"
+                                        "example": 3
                                     }
                                 }
                             }
@@ -2799,20 +2762,20 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
+                    "description": "No campo \"option\" (obrigatório)  deve ser o nome da opção que vai aparecer com o produto <br/><br/>No campo \"quantity\" (obrigatório)  deve ter a quantidade disponível referente aquela opção<br/><br/>",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "option": {
                                         "type": "string",
-                                        "example": "G",
-                                        "description": "É a opção que vai aparecer com o produto"
+                                        "example": "G"
                                     },
                                     "quantity": {
                                         "type": "number",
-                                        "example": 3,
-                                        "description": "É a quantidade disponível na opção"
+                                        "example": 3
                                     }
                                 }
                             }

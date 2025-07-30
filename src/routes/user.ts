@@ -18,17 +18,17 @@ userRoute.get('/usuario',regularlCondicionalRoutes,  isLogged, (req: Request, re
     return;
 });
 
-userRoute.put('/usuario', regularlCondicionalRoutes, isLogged, upload.none(), validateInformationUser, (req: Request, res: Response) => {
+userRoute.put('/usuario', regularlCondicionalRoutes, isLogged, validateInformationUser, (req: Request, res: Response) => {
     updateUserInformationController(req, res);
     return;
 });
 
-userRoute.post('/usuario/endereco',regularlCondicionalRoutes,  isLogged, upload.none(), validatesInformationAddress, (req: Request, res: Response) => {
+userRoute.post('/usuario/endereco',regularlCondicionalRoutes,  isLogged, validatesInformationAddress, (req: Request, res: Response) => {
     createAddressController(req, res);
     return;
 });
 
-userRoute.put('/usuario/endereco/:hash',regularlCondicionalRoutes,  isLogged, upload.none(), validatesInformationAddress, (req: Request, res: Response) => {
+userRoute.put('/usuario/endereco/:hash',regularlCondicionalRoutes,  isLogged, validatesInformationAddress, (req: Request, res: Response) => {
     updateAddressController(req, res);
     return;
 });
@@ -38,7 +38,7 @@ userRoute.delete('/usuario/endereco/:hash',regularlCondicionalRoutes,  isLogged,
     return;
 });
 
-userRoute.patch('/usuario/senha', regularlCondicionalRoutes, isLogged, upload.none(), validatePassword, (req: Request, res: Response) => {
+userRoute.patch('/usuario/senha', regularlCondicionalRoutes, isLogged, validatePassword, (req: Request, res: Response) => {
     changePasswordController(req, res);
     return;
 });

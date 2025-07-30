@@ -1,7 +1,5 @@
 import { Router, Request, Response } from 'express';
-import multer from 'multer';
 
-import uploadConfig from '../config/multer';
 import isNotLogged from '../middlewares/isNotLogged';
 import { validateEmail } from '../middlewares/validatorInput';
 import { emailLimit, confirmationLimit } from '../security/requestLimit';
@@ -10,14 +8,13 @@ import { emailConfirmationController, resendEmailConfirmationController } from '
 
 const confirmationEmailRoute = Router();
 
-const upload = multer(uploadConfig.upload());
 
 confirmationEmailRoute.put('/confirmacao/:hash', regularlCondicionalRoutes, isNotLogged, confirmationLimit, (req: Request, res: Response) => {
     emailConfirmationController(req, res);
     return;
 });
 
-confirmationEmailRoute.post('/confirmacao', regularlCondicionalRoutes, isNotLogged, emailLimit, upload.none(), validateEmail, (req: Request, res: Response) => {
+confirmationEmailRoute.post('/confirmacao', regularlCondicionalRoutes, isNotLogged, emailLimit, validateEmail, (req: Request, res: Response) => {
     resendEmailConfirmationController(req, res);
     return;
 });

@@ -99,11 +99,11 @@ export const validateStatus = [
 ]
 
 export const validatesInformationAddress = [
-    body('description')
+    body('name')
         .notEmpty().withMessage('Falta a descrição')
         .trim()
         .escape()
-        .isLength({ max: 100 }).withMessage('A descrição não pode passar de 100 caracteres'),
+        .isLength({ max: 50 }).withMessage('A descrição não pode passar de 100 caracteres'),
 
     body('street')
         .notEmpty().withMessage('Falta a rua')

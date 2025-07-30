@@ -12,9 +12,9 @@ export async function createAddressController(req: Request, res: Response){
         return;
     }
 
-    const { description, street, number, neighborhood, zipCode, state, city, complement } = req.body;
+    const { name, street, number, neighborhood, zipCode, state, city, complement } = req.body;
 
-    const returnServiceAddress = await createAddressService(req.userId, description, street, number, neighborhood, zipCode, state, city, complement);
+    const returnServiceAddress = await createAddressService(req.userId, name, street, number, neighborhood, zipCode, state, city, complement);
 
     if(returnServiceAddress.error == true){
         serverSendingPattern(res, returnServiceAddress.redirect, returnServiceAddress.data, null, null);
@@ -34,9 +34,9 @@ export async function updateAddressController(req: Request, res: Response){
     }
 
     const { hash } = req.params;
-    const { description, street, number, neighborhood, zipCode, state, city, complement } = req.body;
+    const { name, street, number, neighborhood, zipCode, state, city, complement } = req.body;
 
-    const returnServiceAddress = await updateAddressService(req.userId, hash, description, street, number, neighborhood, zipCode, state, city, complement);
+    const returnServiceAddress = await updateAddressService(req.userId, hash, name, street, number, neighborhood, zipCode, state, city, complement);
 
     if(returnServiceAddress.error == true){
         serverSendingPattern(res, returnServiceAddress.redirect, returnServiceAddress.data, null, null);

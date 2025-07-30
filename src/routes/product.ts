@@ -30,7 +30,7 @@ productRoute.post('/admin/produto', regularlCondicionalRoutes, isAdmin, upload.a
     return;
 });
 
-productRoute.post('/admin/produto/opcao/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateOptionProduct, (req: Request, res: Response) => {
+productRoute.post('/admin/produto/opcao/:hash', regularlCondicionalRoutes, isAdmin, validateOptionProduct, (req: Request, res: Response) => {
     createOptionProductController(req, res);
     return;
 });
@@ -40,12 +40,12 @@ productRoute.post('/admin/produto/imagem/:hash', regularlCondicionalRoutes, isAd
     return;
 });
 
-productRoute.put('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, upload.none(), validateChangedProduct, (req: Request, res: Response) => {
+productRoute.put('/admin/produto/:hash', regularlCondicionalRoutes, isAdmin, validateChangedProduct, (req: Request, res: Response) => {
     changeProductController(req, res);
     return;
 });
 
-productRoute.put('/admin/produto/opcao/:hash',regularlCondicionalRoutes, isAdmin, upload.none(), validateOptionProduct, (req: Request, res: Response) => {
+productRoute.put('/admin/produto/opcao/:hash',regularlCondicionalRoutes, isAdmin, validateOptionProduct, (req: Request, res: Response) => {
     changeOptionProductController(req, res);
     return;
 });
